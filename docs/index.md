@@ -1,2 +1,1 @@
-# A start
-is a start is a start.
+Later we use mkdocs for documentation - bootstrapping...
