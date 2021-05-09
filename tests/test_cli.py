@@ -27,6 +27,16 @@ def test_main_ok_no_args(capsys):
     assert not err
 
 
+def test_main_nok_non_existing_file(capsys):
+    file_not_there = pathlib.Path("no", "file", "here")
+    assert not file_not_there.exists(), f"WARNING: The path {file_not_there} SHOULD not exist, but does."
+    with pytest.raises(SystemExit, match="2"):
+        cli.main([str(file_not_there)], debug=False)
+    out, err = capsys.readouterr()
+    assert "error: for now only existing paths accepted." in out.lower()
+    assert not err
+
+
 def test_main_nok_test_fixtures_single_non_png_file(caplog, capsys):
     caplog.set_level(logging.INFO)
     assert cli.main([SINGLE_FILE_FOLDER], debug=False) == 0
