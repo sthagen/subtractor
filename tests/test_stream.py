@@ -5,7 +5,7 @@ from typing import Generator
 
 import pytest  # type: ignore
 
-from subtractor.stream import visit
+from subtractor.stream import final_suffix_in, visit
 
 FIXTURE_ROOT = pathlib.Path("tests", "fixtures")
 DEFAULT_FILE_NAME = "empty.png"
@@ -20,7 +20,8 @@ TWIN_TREE_WUN_FOLDER = pathlib.Path(TWIN_TREE_FOLDER, "wun")
 TWIN_TREE_TWO_FOLDER = pathlib.Path(TWIN_TREE_FOLDER, "two")
 TWIN_TREE_FILES_WUN_EMPTY_PNG = pathlib.Path(TWIN_TREE_WUN_FOLDER, DEFAULT_FILE_NAME)
 TWIN_TREE_FILES_TWO_EMPTY_PNG = pathlib.Path(TWIN_TREE_TWO_FOLDER, DEFAULT_FILE_NAME)
-TWIN_TREE_PATHS_SET = {TWIN_TREE_TWO_FOLDER, TWIN_TREE_FILES_TWO_EMPTY_PNG, TWIN_TREE_WUN_FOLDER, TWIN_TREE_FILES_WUN_EMPTY_PNG}
+TWIN_TREE_PATHS_SET = {
+    TWIN_TREE_TWO_FOLDER, TWIN_TREE_FILES_TWO_EMPTY_PNG, TWIN_TREE_WUN_FOLDER, TWIN_TREE_FILES_WUN_EMPTY_PNG}
 
 
 def test_visit_ok_test_single_fixture_file():
@@ -90,13 +91,7 @@ def test_visit_ok_test_fixture_twin_tree_folder_with_single_identical_files():
 
 
 def test_visit_filter_png_ok_test_fixture_twin_tree_folder_with_single_identical_files():
-    def only_png(path):
-        if path.is_dir():
-            return False
-        final_suffix = "" if not path.suffixes else path.suffixes[-1].lower()
-        return final_suffix == ".png"
-
-    visitor = visit(TWIN_TREE_FOLDER, post_filter=only_png)
+    visitor = visit(TWIN_TREE_FOLDER, post_filter=final_suffix_in)
     assert isinstance(visitor, Generator)
     first = next(visitor)
     assert first in TWIN_TREE_PATHS_SET
@@ -109,13 +104,13 @@ def test_visit_filter_png_ok_test_fixture_twin_tree_folder_with_single_identical
 
 
 def test_visit_sorted_reverse_filter_ok_test_fixture_twin_tree_folder_with_single_identical_files():
-    def only_png(path):
-        if path.is_dir():
-            return False
-        final_suffix = "" if not path.suffixes else path.suffixes[-1].lower()
-        return final_suffix == ".png"
-
-    visitor = visit(TWIN_TREE_FOLDER, pre_filter=sorted, pre_filter_options=dict(reverse=True), post_filter=only_png)
+    visit_options = {
+        "pre_filter": sorted,
+        "pre_filter_options": {"reverse": True},
+        "post_filter": final_suffix_in,
+        "post_filter_options": {"suffixes": (".png",)},
+    }
+    visitor = visit(TWIN_TREE_FOLDER, **visit_options)
     assert isinstance(visitor, Generator)
     assert next(visitor) == TWIN_TREE_FILES_WUN_EMPTY_PNG
     assert next(visitor) == TWIN_TREE_FILES_TWO_EMPTY_PNG
