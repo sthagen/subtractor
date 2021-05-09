@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=c-extension-no-member,expression-not-assigned,line-too-long,logging-fstring-interpolation
+# pylint: disable=c-extension-no-member,expression-not-assigned,invalid-name,line-too-long,logging-fstring-interpolation
 """Do the diff."""
-import configparser
-import csv
-import itertools
-import json
 import logging
 import pathlib
 import sys
@@ -67,7 +63,7 @@ def slugify(thing, these=('\n',), those=(' ',)) -> str:
         for this in these:
             hook = hook.replace(this, that)
         return hook
-    
+
     hook = str(thing)
     for this, that in zip(these, those):
         hook = hook.replace(this, that)
@@ -91,28 +87,23 @@ def process(path, handler, success, failure):
     return False, message, success, failure + 1
 
 
-def process_pair(good, bad, obs_path, present, present_is_dir, ref_path):
+def process_pair(good, bad, obs_path, present, ref_path):
+    """The main per pair processing code."""
     LOG.info("Pair ref=%s, obs=%s", ref_path, obs_path)
     if ref_path and obs_path:
         ok, size, _, _ = process(ref_path, file_has_content, good, bad)
         LOG.info("  Found ref=%s to be %s with size %s bytes", ref_path, "OK" if ok else "NOK", size)
         ok, width, height, info = shape_of_png(ref_path)
-        if ok:
-            message = f"shape {width}x{height}"
-        else:
-            message = info["error"]
-        LOG.info("    Analyzed ref=%s as PNG to be %s with %s", ref_path, "OK" if ok else "NOK", message)
+        LOG.info("    Analyzed ref=%s as PNG to be %s with %s",
+                 ref_path, "OK" if ok else "NOK", f"shape {width}x{height}" if ok else info["error"])
         ok, size, _, _ = process(obs_path, file_has_content, good, bad)
         LOG.info("  Found obs=%s to be %s with size %s bytes", obs_path, "OK" if ok else "NOK", size)
         ok, width, height, info = shape_of_png(obs_path)
-        if ok:
-            message = f"shape {width}x{height}"
-        else:
-            message = info["error"]
-        LOG.info("    Analyzed obs=%s as PNG to be %s with %s", obs_path, "OK" if ok else "NOK", message)
+        LOG.info("    Analyzed obs=%s as PNG to be %s with %s",
+                 obs_path, "OK" if ok else "NOK", f"shape {width}x{height}" if ok else info["error"])
         pixel_count = width * height
-        present_path = pathlib.Path(present, f"diff-of-{obs_path.parts[-1]}") if present_is_dir else present
-        mismatch, w_diff, h_diff = diff_img(ref_path, obs_path, present_path)
+        present_path = pathlib.Path(present, f"diff-of-{obs_path.parts[-1]}") if present.is_dir() else present
+        mismatch, _, _ = diff_img(ref_path, obs_path, present_path)
         if mismatch:
             LOG.info("  Mismatch of obs=%s is %d of %d pixels or %0.1f %%",
                      obs_path, mismatch, pixel_count, round(100 * mismatch / pixel_count, 1))
@@ -180,8 +171,7 @@ def main(argv=None, abort=False, debug=None, threshold=None):
     """
     init_logger(level=logging.DEBUG if debug else None)
     forest = argv if argv else sys.argv[1:]
-    num_trees = len(forest)
-    if not forest or num_trees < 2 or num_trees > 3:
+    if not forest or len(forest) < 2 or len(forest) > 3:
         print("Usage: subtractor past future [present]")
         return 0, "USAGE"
 
@@ -196,21 +186,24 @@ def main(argv=None, abort=False, debug=None, threshold=None):
     LOG.debug("Timeline past=%s, present=%s, and future=%s", past, present, future)
 
     mode_display = "folder" if present_is_dir else "file"
-    
+
     LOG.info("Starting comparisons visiting past=%s and future=%s in %s mode", past, future, mode_display)
     threshold_fraction = 0.00
     if threshold:
         threshold_fraction = threshold
     pixel.OPTIONS["threshold"] = threshold_fraction
-    LOG.info("  Threshold for pixel mismatch is %d%s", 
+    LOG.info("  Threshold for pixel mismatch is %d%s",
              int(100 * threshold_fraction), " %" if threshold_fraction > 0 else "")
     good, bad = 0, 0
 
     if not present_is_dir:
-        good, bad = process_pair(good, bad, future, present, present_is_dir, past)
+        good, bad = process_pair(good, bad, future, present, past)
     else:
         for ref_path, obs_path in matching_zipper(past, future):
-            good, bad = process_pair(good, bad, obs_path, present, present_is_dir, ref_path)
+            good, bad = process_pair(good, bad, obs_path, present, ref_path)
+            if abort and bad:
+                LOG.error("Requested abort and encountered a bad pair")
+                break
 
     LOG.info("Finished comparisons finding good=%d and bad=%d in %s mode", good, bad, mode_display)
 
