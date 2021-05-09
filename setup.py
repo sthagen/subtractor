@@ -22,7 +22,7 @@ setup(
     description="Pixels, pixels, pixels.",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/sthagen/jubilant-inventions",
+    url="https://github.com/sthagen/jubilant-invention",
     author="Stefan Hagen",
     author_email="stefan@hagen.link",
     license="MIT",
