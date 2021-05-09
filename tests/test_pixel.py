@@ -55,8 +55,9 @@ def test_shape_of_png_nok_non_existing_file():
 
 def test_diff_img_ok_ref_obs_rgb_red_file():
     tmp_png = pathlib.Path("tmp_diff_same.png")
-    mismatch = diff_img(REF_CHILD_RGB_RED_PNG, OBS_CHILD_RGB_RED_PNG, tmp_png)
+    mismatch, w_diff, h_diff = diff_img(REF_CHILD_RGB_RED_PNG, OBS_CHILD_RGB_RED_PNG, tmp_png)
     assert mismatch == 0
+    assert w_diff == 2 and h_diff == 2
     assert tmp_png.exists() and tmp_png.is_file() and tmp_png.stat().st_size == 79
     ok, width, height, info = shape_of_png(tmp_png)
     assert ok is True
