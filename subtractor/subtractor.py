@@ -94,6 +94,23 @@ def present_from(ref: pathlib.Path, obs: pathlib.Path) -> pathlib.Path:
     return present
 
 
+def causal_triplet(trunks) -> tuple:
+    """Generate past, present, and future from trunks or include a present of None."""
+    past, future = tuple(pathlib.Path(entry) for entry in trunks[:2])
+
+    if any([past.is_dir(), future.is_dir()]):
+        consistent_args = past.is_dir() and future.is_dir()
+    elif any([past.is_file(), future.is_file()]):
+        consistent_args = past.is_file() and future.is_file()
+    else:
+        consistent_args = False
+    if not consistent_args:
+        return past, None, future
+
+    present = pathlib.Path(trunks[-1]) if len(trunks) == 3 else present_from(past, future)
+    return past, present, future
+
+
 def main(argv=None, abort=False, debug=None):
     """Drive the subtractor.
     This function acts as the command line interface backend.
@@ -107,19 +124,12 @@ def main(argv=None, abort=False, debug=None):
         return 0, "USAGE"
 
     LOG.debug("Guarded dispatch forest=%s", forest)
-    past, future = tuple(pathlib.Path(entry) for entry in forest[:2])
+    past, present, future = causal_triplet(forest)
 
-    if any([past.is_dir(), future.is_dir()]):
-        consistent_args = past.is_dir() and future.is_dir()
-    elif any([past.is_file(), future.is_file()]):
-        consistent_args = past.is_file() and future.is_file()
-    else:
-        consistent_args = False
-    if not consistent_args:
+    if not present:
         print("ERROR: Either all args are dirs or files, but no mix")
         return 2, "USAGE"
 
-    present = pathlib.Path(forest[-1]) if num_trees == 3 else present_from(past, future)
     present_is_dir = present.is_dir()
     LOG.debug("Timeline past=%s, present=%s, and future=%s", past, present, future)
 
