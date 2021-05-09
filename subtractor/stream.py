@@ -17,7 +17,7 @@ def walk_tree_explicit(base_path):
                 yield entry
 
 
-def visit(tree_or_file_path, a_filter=None):
+def visit(tree_or_file_path, a_filter=None, filter_options=None):
     """Visit tree and yield the leaves optionally filtered."""
     thing = pathlib.Path(tree_or_file_path)
     if thing.is_file():
@@ -26,5 +26,7 @@ def visit(tree_or_file_path, a_filter=None):
         for path in thing.rglob("*"):
             yield path
     else:
-        for path in a_filter(thing.rglob("*")):
+        if filter_options is None:
+            filter_options = {}
+        for path in a_filter(thing.rglob("*"), **filter_options):
             yield path
