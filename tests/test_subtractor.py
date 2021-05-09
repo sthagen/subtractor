@@ -46,3 +46,8 @@ def test_slugify_as_to_bs_ok():
 def test_slugify_as_and_bs_to_cs_ok():
     assert slugify("aaabb", these=("a", "b"), those=("c",)) == "ccccc"
 
+
+def test_slugify_as_to_bs_and_cs_mok():
+    with pytest.raises(ValueError):
+        slugify("aaabb", these=("a",), those=("b", "c"))
+
