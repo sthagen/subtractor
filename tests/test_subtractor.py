@@ -29,3 +29,7 @@ def test_process_nok_test_mock_invalid_handler():
     assert message == "test"
     assert good == 42
     assert bad == 0
+
+
+def test_slugify_ok_no_newline():
+    assert slugify("one line") == "one line"
