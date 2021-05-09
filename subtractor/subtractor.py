@@ -44,9 +44,26 @@ def init_logger(name=None, level=None):
     LOG.propagate = True
 
 
-def slugify(error):
-    """Replace newlines by space."""
-    return str(error).replace("\n", "")
+def slugify(thing, these=('\n',), those=(' ',)) -> str:
+    """Replace these (default: new lines) by those (default: space) and return string of thing."""
+    if not these or not those:
+        return str(thing)
+    if len(these) < len(those):
+        raise ValueError("slugify called with more replacement targets than sources")
+    if len(those) == 1:
+        that = those[0]  # HACK A DID ACK
+        if len(these) == 1:
+            these = these[0]
+            return str(thing).replace(these, that)
+        hook = str(thing)
+        for this in these:
+            hook = hook.replace(this, that)
+        return hook
+    
+    hook = str(thing)
+    for this, that in zip(these, those):
+        hook = hook.replace(this, that)
+    return hook
 
 
 def file_has_content(path: pathlib.Path) -> (bool, str):
