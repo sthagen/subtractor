@@ -171,7 +171,7 @@ def matching_zipper(ref, obs):
         yield r, o
 
 
-def main(argv=None, abort=False, debug=None):
+def main(argv=None, abort=False, debug=None, threshold=None):
     """Drive the subtractor.
     This function acts as the command line interface backend.
     There is some duplication to support testability.
@@ -197,6 +197,8 @@ def main(argv=None, abort=False, debug=None):
     
     LOG.info("Starting comparisons visiting past=%s and future=%s in %s mode", past, future, mode_display)
     threshold_fraction = 0.00
+    if threshold:
+        threshold_fraction = threshold
     pixel.OPTIONS["threshold"] = threshold_fraction
     LOG.info("  Threshold for pixel mismatch is %d%s", 
              int(100 * threshold_fraction), " %" if threshold_fraction > 0 else "")
