@@ -39,5 +39,10 @@ def test_slugify_ok_with_single_newline():
     assert slugify("one line\nanother line") == "one line another line"
 
 
+def test_slugify_as_to_bs_ok():
+    assert slugify("aaabb", these=("a",), those=("b",)) == "bbbbb"
+
+
 def test_slugify_as_and_bs_to_cs_ok():
     assert slugify("aaabb", these=("a", "b"), those=("c",)) == "ccccc"
+
