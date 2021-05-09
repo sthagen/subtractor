@@ -24,7 +24,7 @@ image:
 	docker buildx inspect rekcod ;\
 	docker buildx build \
 	--output=type=registry \
-	--platform linux/amd64,linux/arm64,linux/arm/v7 \
+	--platform linux/amd64,linux/arm64 \
 	--no-cache \
 	--build-arg BUILD_TS=$$BUILD_TS \
 	--build-arg REVISION=$$REVISION \
