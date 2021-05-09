@@ -5,10 +5,11 @@ import pytest  # type: ignore
 from subtractor.subtractor import process, slugify
 
 
-def test_process_ok_test_single_fixture_rgb_file():
+def test_process_ok_test_mock_valid_handler():
     def mock_valid_message(arg):
         _ = arg
         return True, "test"
+
     good, bad = 42, -1
     ok, message, good, bad = process(None, mock_valid_message, good, bad)
     assert ok is True
@@ -16,3 +17,15 @@ def test_process_ok_test_single_fixture_rgb_file():
     assert good == 42 + 1
     assert bad == -1
 
+
+def test_process_nok_test_mock_invalid_handler():
+    def mock_invalid_message(arg):
+        _ = arg
+        return False, "test"
+
+    good, bad = 42, -1
+    ok, message, good, bad = process(None, mock_invalid_message, good, bad)
+    assert ok is False
+    assert message == "test"
+    assert good == 42
+    assert bad == 0
