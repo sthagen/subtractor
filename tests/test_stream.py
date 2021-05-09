@@ -39,3 +39,15 @@ def test_visit_ok_test_fixture_folder_with_two_files():
     assert last != first and last in (another_empty_png, empty_png)
     with pytest.raises(StopIteration):
         next(visitor)
+
+
+def test_visit_sorted_ok_test_fixture_folder_with_two_files():
+    two_files_folder = pathlib.Path("tests", "fixtures", "two_files")
+    empty_png = pathlib.Path(two_files_folder, "empty.png")
+    another_empty_png = pathlib.Path(two_files_folder, "another_empty.png")
+    visitor = visit(two_files_folder, a_filter=sorted)
+    assert isinstance(visitor, Generator)
+    assert next(visitor) == another_empty_png
+    assert next(visitor) == empty_png
+    with pytest.raises(StopIteration):
+        next(visitor)
