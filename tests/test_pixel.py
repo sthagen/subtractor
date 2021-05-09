@@ -4,7 +4,7 @@ import pathlib
 
 import pytest  # type: ignore
 
-from subtractor.pixel import shape_of_png
+from subtractor.pixel import diff_img, shape_of_png
 
 FIXTURE_ROOT = pathlib.Path("tests", "fixtures")
 DEFAULT_FILE_NAME = "empty.png"
@@ -16,6 +16,7 @@ REF_CHILD_FOLDER = pathlib.Path(REF_OBS_ROOT, "ref")
 OBS_CHILD_FOLDER = pathlib.Path(REF_OBS_ROOT, "obs")
 RGB_RED_NAME = "ff0000_2x2.png"
 REF_CHILD_RGB_RED_PNG = pathlib.Path(REF_CHILD_FOLDER, RGB_RED_NAME)
+OBS_CHILD_RGB_RED_PNG = pathlib.Path(OBS_CHILD_FOLDER, RGB_RED_NAME)
 
 
 def test_shape_of_png_ok_test_single_fixture_rgb_file():
@@ -50,3 +51,22 @@ def test_shape_of_png_nok_non_existing_file():
     assert ok is False
     assert width is None and height is None
     assert info["error"].lower() == f"[errno 2] no such file or directory: '{str(file_not_there).lower()}'"
+
+
+def test_diff_img_ok_ref_obs_rgb_red_file():
+    tmp_png = pathlib.Path("tmp_diff_same.png")
+    mismatch = diff_img(REF_CHILD_RGB_RED_PNG, OBS_CHILD_RGB_RED_PNG, tmp_png)
+    assert mismatch == 0
+    assert tmp_png.exists() and tmp_png.is_file() and tmp_png.stat().st_size == 68
+    ok, width, height, info = shape_of_png(tmp_png)
+    assert ok is True
+    assert width == 2 and height == 2
+    facts = {
+        'alpha': True,
+        'bitdepth': 8,
+        'greyscale': False,
+        'interlace': 0,
+        'planes': 4,
+        'size': (2, 2)
+    }
+    assert info == facts
