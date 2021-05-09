@@ -10,7 +10,7 @@ from subtractor.stream import visit
 TWO_FILES_FOLDER = pathlib.Path("tests", "fixtures", "two_files")
 EMPTY_PNG = pathlib.Path(TWO_FILES_FOLDER, "empty.png")
 ANOTHER_EMPTY_PNG = pathlib.Path(TWO_FILES_FOLDER, "another_empty.png")
-TWO_FILES_SET = set([ANOTHER_EMPTY_PNG, EMPTY_PNG])
+TWO_FILES_SET = {ANOTHER_EMPTY_PNG, EMPTY_PNG}
 
 
 def test_visit_ok_test_single_fixture_file():
