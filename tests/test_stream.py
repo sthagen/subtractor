@@ -15,3 +15,13 @@ def test_visit_ok_test_fixture_file():
     assert next(visitor) == empty_png
     with pytest.raises(StopIteration):
         next(visitor)
+
+
+def test_visit_ok_test_fixture_folder_with_wun_file():
+    single_file_folder = pathlib.Path("tests", "fixtures")
+    empty_png = pathlib.Path(single_file_folder, "empty.png")
+    visitor = visit(single_file_folder)
+    assert isinstance(visitor, Generator)
+    assert next(visitor) == empty_png
+    with pytest.raises(StopIteration):
+        next(visitor)
