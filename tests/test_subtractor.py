@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=line-too-long,missing-docstring,reimported,unused-import,unused-variable
+import pathlib
+
 import pytest  # type: ignore
 
-from subtractor.subtractor import process, slugify
+from subtractor.subtractor import file_has_content, process, slugify
 
 
+def test_file_has_content_nok_non_existing_file():
+    file_not_there = pathlib.Path("no", "file", "here")
+    assert not file_not_there.exists(), f"WARNING: The path {file_not_there} SHOULD not exist, but does."
+    assert file_has_content(file_not_there) == (False, f'{str(file_not_there)} is no file')
+
+    
 def test_process_ok_test_mock_valid_handler():
     def mock_valid_message(arg):
         _ = arg
