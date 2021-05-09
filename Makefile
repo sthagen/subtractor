@@ -11,6 +11,7 @@ all:
 clean:
 	@echo "- removing output files"
 	@rm -f *.log
+	@rm -fr $$(find tests/fixtures -print | grep "diff-")
 
 image:
 	@echo "- building container image"
