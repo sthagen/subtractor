@@ -30,5 +30,5 @@ def main(argv=None, abort=None, debug=None):
             print("ERROR: For now only existing paths accepted.")
             sys.exit(2)
 
-    code, _ = diff.main(unique_trees, abort=abort, debug=debug)
+    code, _ = diff.main(list(unique_trees.keys()), abort=abort, debug=debug)
     return code

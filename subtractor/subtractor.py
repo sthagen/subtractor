@@ -8,9 +8,9 @@ import logging
 import pathlib
 import sys
 
-from subtractor.pixel import shape_of_png
+from subtractor.pixel import diff_img, shape_of_png
+import subtractor.pixel as pixel  # To access pixel.OPTIONS["threshold"]
 from subtractor.stream import final_suffix_in, visit
-
 
 ENCODING = "utf-8"
 
@@ -83,6 +83,17 @@ def process(path, handler, success, failure):
     return False, message, success, failure + 1
 
 
+def present_from(ref: pathlib.Path, obs: pathlib.Path) -> pathlib.Path:
+    """Build a somehow least surprising difference folder from ref and obs."""
+    ref_code = ref.parts[-1]
+    if obs.is_file():
+        return pathlib.Path(*obs.parts[:-1], f"diff-of-{obs.parts[-1]}")
+
+    present = pathlib.Path(*obs.parts[:-1], f"diff-of-{ref_code}_{obs.parts[-1]}")
+    present.mkdir(parents=True, exist_ok=True)
+    return present
+
+
 def main(argv=None, abort=False, debug=None):
     """Drive the subtractor.
     This function acts as the command line interface backend.
@@ -90,17 +101,35 @@ def main(argv=None, abort=False, debug=None):
     """
     init_logger(level=logging.DEBUG if debug else None)
     forest = argv if argv else sys.argv[1:]
-    if not forest:
-        print("Usage: subtractor past future")
-        return 0, "USAGE"
     num_trees = len(forest)
-    LOG.debug("Guarded dispatch forest=%s, num_trees=%d", forest, num_trees)
+    if not forest or num_trees < 2 or num_trees > 3:
+        print("Usage: subtractor past future [present]")
+        return 0, "USAGE"
 
-    LOG.info(
-        "Starting comparisons visiting a forest with %d tree%s",
-        num_trees,
-        "" if num_trees == 1 else "s",
-    )
+    LOG.debug("Guarded dispatch forest=%s", forest)
+    past, future = tuple(pathlib.Path(entry) for entry in forest[:2])
+
+    if any([past.is_dir(), future.is_dir()]):
+        consistent_args = past.is_dir() and future.is_dir()
+    elif any([past.is_file(), future.is_file()]):
+        consistent_args = past.is_file() and future.is_file()
+    else:
+        consistent_args = False
+    if not consistent_args:
+        print("ERROR: Either all args are dirs or files, but no mix")
+        return 2, "USAGE"
+
+    present = pathlib.Path(forest[-1]) if num_trees == 3 else present_from(past, future)
+    present_is_dir = present.is_dir()
+    LOG.debug("Timeline past=%s, present=%s, and future=%s", past, present, future)
+
+    mode_display = "folder" if present_is_dir else "file"
+    
+    LOG.info("Starting comparisons visiting past=%s and future=%s in %s mode", past, future, mode_display)
+    threshold_fraction = 0.00
+    pixel.OPTIONS["threshold"] = threshold_fraction
+    LOG.info("  Threshold for pixel mismatch is %d%s", 
+             int(100 * threshold_fraction), " %" if threshold_fraction > 0 else "")
     good, bad = 0, 0
     visit_options = {
         "pre_filter": sorted,
@@ -108,16 +137,36 @@ def main(argv=None, abort=False, debug=None):
         "post_filter": final_suffix_in,
         "post_filter_options": {"suffixes": (".png",)},
     }
-    for tree in forest:
-        for path in visit(tree, **visit_options):
-            ok, size, good, bad = process(path, file_has_content, good, bad)
-            LOG.info("Found %s to be %s with size %s bytes", path, "OK" if ok else "NOK", size)
-            ok, width, height, info = shape_of_png(path)
-            if ok:
-                message = f"shape {width}x{height}"
-            else:
-                message = info["error"]
-            LOG.info("Analyzed %s as PNG to be %s with %s", path, "OK" if ok else "NOK", message)
+    ref_visitor = visit(past, **visit_options)
+    obs_visitor = visit(future, **visit_options)
+    for ref_path, obs_path in zip(ref_visitor, obs_visitor):
+        LOG.info("Pair ref=%s, obs=%s", ref_path, obs_path)
+        ok, size, good, bad = process(ref_path, file_has_content, good, bad)
+        LOG.info("  Found ref=%s to be %s with size %s bytes", ref_path, "OK" if ok else "NOK", size)
+        ok, width, height, info = shape_of_png(ref_path)
+        if ok:
+            message = f"shape {width}x{height}"
+        else:
+            message = info["error"]
+        LOG.info("    Analyzed ref=%s as PNG to be %s with %s", ref_path, "OK" if ok else "NOK", message)
+
+        ok, size, good, bad = process(obs_path, file_has_content, good, bad)
+        LOG.info("  Found obs=%s to be %s with size %s bytes", obs_path, "OK" if ok else "NOK", size)
+        ok, width, height, info = shape_of_png(obs_path)
+        if ok:
+            message = f"shape {width}x{height}"
+        else:
+            message = info["error"]
+        LOG.info("    Analyzed obs=%s as PNG to be %s with %s", obs_path, "OK" if ok else "NOK", message)
+
+        pixel_count = width * height
+        present_path = pathlib.Path(present, f"diff-of-{obs_path.parts[-1]}") if present_is_dir else present
+        mismatch = diff_img(ref_path, obs_path, present_path)
+        if mismatch:
+            LOG.info("  Mismatch of obs=%s is %d of %d pixels or %0.1f %%", 
+                     obs_path, mismatch, pixel_count, round(100 * mismatch / pixel_count, 1))
+        else:
+            LOG.info("  Match of obs=%s", obs_path)
 
     print(f"{'OK' if not bad else 'FAIL'}")
 

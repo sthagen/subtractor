@@ -4,9 +4,7 @@
 import pathlib
 
 from PIL import Image
-from pixelmatch.contrib import PIL
-
-from pixelmatch import pixelmatch
+from pixelmatch.contrib.PIL import pixelmatch
 import png
 
 OPTIONS = {"threshold": 0.05}
@@ -40,8 +38,8 @@ def diff_img(ref, obs, sub):
     img_a = Image.open(ref)
     img_b = Image.open(obs)
     width, height = img_a.size
-    img_diff = Image.new("RGBA", (width, height))
-    mismatch = PIL.pixelmatch(img_a, img_b, **OPTIONS)
+    img_diff = Image.new("RGB", (width, height))
+    mismatch = pixelmatch(img_a, img_b, img_diff, **OPTIONS)
 
     img_diff.save(sub)
     return mismatch
