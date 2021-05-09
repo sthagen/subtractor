@@ -95,7 +95,7 @@ def main(argv=None, abort=False, debug=None):
     for tree in forest:
         for path in visit(tree, **visit_options):
             ok, message, good, bad = process(path, file_has_content, good, bad)
-            LOG.info("Found %s to be %s", path, "OK" if ok else "NOK")
+            LOG.info("Found %s to be %s with message %s", path, "OK" if ok else "NOK", message)
 
     print(f"{'OK' if not bad else 'FAIL'}")
 
