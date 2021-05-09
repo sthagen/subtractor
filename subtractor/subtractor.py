@@ -93,8 +93,8 @@ def main(argv=None, abort=False, debug=None):
     }
     for tree in forest:
         for path in visit(tree, **visit_options):
-            ok, message, good, bad = process(path, file_has_content, good, bad)
-            LOG.info("Found %s to be %s with message %s", path, "OK" if ok else "NOK", message)
+            ok, size, good, bad = process(path, file_has_content, good, bad)
+            LOG.info("Found %s to be %s with size %s bytes", path, "OK" if ok else "NOK", size)
             ok, width, height, info = shape_of_png(path)
             if ok:
                 message = f"shape {width}x{height}"

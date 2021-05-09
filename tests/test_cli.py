@@ -28,5 +28,5 @@ def test_main_ok_test_fixtures_single_file(caplog, capsys):
     assert "fail" in out.lower()
     assert not err
     assert "starting comparisons visiting a forest with 1 tree" in caplog.text.lower()
-    assert f"found {SINGLE_FILE_PATH_EMPTY_PNG} to be nok with message 0" in caplog.text.lower()
+    assert f"found {SINGLE_FILE_PATH_EMPTY_PNG} to be nok with size 0 bytes" in caplog.text.lower()
     assert f"analyzed {SINGLE_FILE_PATH_EMPTY_PNG} as png to be nok with formaterror: png file has invalid signature." in caplog.text.lower()
