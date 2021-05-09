@@ -31,6 +31,10 @@ def test_process_nok_test_mock_invalid_handler():
     assert bad == 0
 
 
+def test_slugify_ok_empty():
+    assert slugify('') == ''
+
+
 def test_slugify_ok_no_newline():
     assert slugify("one line") == "one line"
 
