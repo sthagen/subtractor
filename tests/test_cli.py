@@ -25,7 +25,7 @@ def test_main_ok_test_fixtures_single_file(caplog, capsys):
     caplog.set_level(logging.INFO)
     assert cli.main([SINGLE_FILE_FOLDER], debug=False) == 0
     out, err = capsys.readouterr()
-    assert "ok" in out.lower()
+    assert "fail" in out.lower()
     assert not err
     assert "starting comparisons visiting a forest with 1 tree" in caplog.text.lower()
-    assert f"found {SINGLE_FILE_PATH_EMPTY_PNG} to be ok" in caplog.text.lower()
+    assert f"found {SINGLE_FILE_PATH_EMPTY_PNG} to be nok" in caplog.text.lower()
