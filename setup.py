@@ -40,6 +40,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "pixelmatcher",
+        "pypng",
     ],
     entry_points={
         "console_scripts": [
