@@ -3,6 +3,7 @@
 """Do the diff."""
 import configparser
 import csv
+import itertools
 import json
 import logging
 import pathlib
@@ -27,6 +28,13 @@ LOG_PATH = (
 LOG_LEVEL = logging.INFO
 
 FAILURE_PATH_REASON = "Failed action for path %s with error: %s"
+
+VISIT_OPTIONS = {
+    "pre_filter": sorted,
+    "pre_filter_options": {"reverse": True},
+    "post_filter": final_suffix_in,
+    "post_filter_options": {"suffixes": (".png",)},
+}
 
 
 def init_logger(name=None, level=None):
@@ -83,6 +91,39 @@ def process(path, handler, success, failure):
     return False, message, success, failure + 1
 
 
+def process_pair(good, bad, obs_path, present, present_is_dir, ref_path):
+    LOG.info("Pair ref=%s, obs=%s", ref_path, obs_path)
+    if ref_path and obs_path:
+        ok, size, good, bad = process(ref_path, file_has_content, good, bad)
+        LOG.info("  Found ref=%s to be %s with size %s bytes", ref_path, "OK" if ok else "NOK", size)
+        ok, width, height, info = shape_of_png(ref_path)
+        if ok:
+            message = f"shape {width}x{height}"
+        else:
+            message = info["error"]
+        LOG.info("    Analyzed ref=%s as PNG to be %s with %s", ref_path, "OK" if ok else "NOK", message)
+        ok, size, good, bad = process(obs_path, file_has_content, good, bad)
+        LOG.info("  Found obs=%s to be %s with size %s bytes", obs_path, "OK" if ok else "NOK", size)
+        ok, width, height, info = shape_of_png(obs_path)
+        if ok:
+            message = f"shape {width}x{height}"
+        else:
+            message = info["error"]
+        LOG.info("    Analyzed obs=%s as PNG to be %s with %s", obs_path, "OK" if ok else "NOK", message)
+        pixel_count = width * height
+        present_path = pathlib.Path(present, f"diff-of-{obs_path.parts[-1]}") if present_is_dir else present
+        mismatch, w_diff, h_diff = diff_img(ref_path, obs_path, present_path)
+        if mismatch:
+            LOG.info("  Mismatch of obs=%s is %d of %d pixels or %0.1f %%",
+                     obs_path, mismatch, pixel_count, round(100 * mismatch / pixel_count, 1))
+        else:
+            LOG.info("  Match of obs=%s", obs_path)
+    else:
+        bad += 1
+
+    return good, bad
+
+
 def present_from(ref: pathlib.Path, obs: pathlib.Path) -> pathlib.Path:
     """Build a somehow least surprising difference folder from ref and obs."""
     ref_code = ref.parts[-1]
@@ -109,6 +150,25 @@ def causal_triplet(trunks) -> tuple:
 
     present = pathlib.Path(trunks[-1]) if len(trunks) == 3 else present_from(past, future)
     return past, present, future
+
+
+def matching_zipper(ref, obs):
+    """Generate a complete matching zipper for the longest matching sequence."""
+    r_p = [path.parts[-1] for path in visit(ref, **VISIT_OPTIONS)]
+    x_p = {name: (name, None) for name in r_p}
+    o_p = [path.parts[-1] for path in visit(obs, **VISIT_OPTIONS)]
+    for name in o_p:
+        if name in x_p:
+            x_p[name] = (name, name)
+        else:
+            x_p[name] = (None, name)
+    for key in sorted(x_p):
+        r, o = x_p[key]
+        if r is not None:
+            r = pathlib.Path(ref, r)
+        if o is not None:
+            o = pathlib.Path(obs, o)
+        yield r, o
 
 
 def main(argv=None, abort=False, debug=None):
@@ -141,42 +201,14 @@ def main(argv=None, abort=False, debug=None):
     LOG.info("  Threshold for pixel mismatch is %d%s", 
              int(100 * threshold_fraction), " %" if threshold_fraction > 0 else "")
     good, bad = 0, 0
-    visit_options = {
-        "pre_filter": sorted,
-        "pre_filter_options": {"reverse": True},
-        "post_filter": final_suffix_in,
-        "post_filter_options": {"suffixes": (".png",)},
-    }
-    ref_visitor = visit(past, **visit_options)
-    obs_visitor = visit(future, **visit_options)
-    for ref_path, obs_path in zip(ref_visitor, obs_visitor):
-        LOG.info("Pair ref=%s, obs=%s", ref_path, obs_path)
-        ok, size, good, bad = process(ref_path, file_has_content, good, bad)
-        LOG.info("  Found ref=%s to be %s with size %s bytes", ref_path, "OK" if ok else "NOK", size)
-        ok, width, height, info = shape_of_png(ref_path)
-        if ok:
-            message = f"shape {width}x{height}"
-        else:
-            message = info["error"]
-        LOG.info("    Analyzed ref=%s as PNG to be %s with %s", ref_path, "OK" if ok else "NOK", message)
 
-        ok, size, good, bad = process(obs_path, file_has_content, good, bad)
-        LOG.info("  Found obs=%s to be %s with size %s bytes", obs_path, "OK" if ok else "NOK", size)
-        ok, width, height, info = shape_of_png(obs_path)
-        if ok:
-            message = f"shape {width}x{height}"
-        else:
-            message = info["error"]
-        LOG.info("    Analyzed obs=%s as PNG to be %s with %s", obs_path, "OK" if ok else "NOK", message)
+    if not present_is_dir:
+        good, bad = process_pair(bad, good, future, present, present_is_dir, past)
+    else:
+        for ref_path, obs_path in matching_zipper(past, future):
+            good, bad = process_pair(bad, good, obs_path, present, present_is_dir, ref_path)
 
-        pixel_count = width * height
-        present_path = pathlib.Path(present, f"diff-of-{obs_path.parts[-1]}") if present_is_dir else present
-        mismatch = diff_img(ref_path, obs_path, present_path)
-        if mismatch:
-            LOG.info("  Mismatch of obs=%s is %d of %d pixels or %0.1f %%", 
-                     obs_path, mismatch, pixel_count, round(100 * mismatch / pixel_count, 1))
-        else:
-            LOG.info("  Match of obs=%s", obs_path)
+    LOG.info("Finished comparisons finding good=%d and bad=%d in %s mode", good, bad, mode_display)
 
     print(f"{'OK' if not bad else 'FAIL'}")
 
