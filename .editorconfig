@@ -9,7 +9,7 @@ root = true
 
 # No trailing spaces, newline at EOF
 charset = utf-8
-trim_trailing_whitespace = true
+trim_trailing_whitespace = false
 insert_final_newline = true
 end_of_line = lf
 
