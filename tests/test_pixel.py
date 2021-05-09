@@ -22,3 +22,9 @@ def test_visit_ok_test_single_fixture_rgb_file():
     ok, message = shape_of_png(REF_CHILD_RGB_RED_PNG)
     assert ok is True
     assert message == "shape 2x2"
+
+
+def test_visit_nok_test_single_fixture_non_png_file():
+    ok, message = shape_of_png(SINGLE_FILE_PATH_EMPTY_PNG)
+    assert ok is False
+    assert message.lower() == "formaterror: png file has invalid signature."
