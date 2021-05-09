@@ -52,7 +52,10 @@ def slugify(error):
 
 def file_has_content(path: pathlib.Path) -> (bool, str):
     """Simplistic handler to develop generic processing function."""
-    return path.is_file() and path.stat().st_size, ""
+    if not path.is_file():
+        return False, f"{path} is no file"
+    byte_size = path.stat().st_size
+    return byte_size > 0, str(byte_size)
 
 
 def process(path, handler, success, failure):
