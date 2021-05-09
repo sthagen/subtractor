@@ -106,3 +106,18 @@ def test_visit_filter_png_ok_test_fixture_twin_tree_folder_with_single_identical
     so_far.append(second)
     with pytest.raises(StopIteration):
         next(visitor)
+
+
+def test_visit_sorted_reverse_filter_ok_test_fixture_twin_tree_folder_with_single_identical_files():
+    def only_png(path):
+        if path.is_dir():
+            return False
+        final_suffix = "" if not path.suffixes else path.suffixes[-1].lower()
+        return final_suffix == ".png"
+
+    visitor = visit(TWIN_TREE_FOLDER, pre_filter=sorted, pre_filter_options=dict(reverse=True), post_filter=only_png)
+    assert isinstance(visitor, Generator)
+    assert next(visitor) == TWIN_TREE_FILES_WUN_EMPTY_PNG
+    assert next(visitor) == TWIN_TREE_FILES_TWO_EMPTY_PNG
+    with pytest.raises(StopIteration):
+        next(visitor)
