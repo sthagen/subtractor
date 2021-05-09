@@ -94,7 +94,7 @@ def process(path, handler, success, failure):
 def process_pair(good, bad, obs_path, present, present_is_dir, ref_path):
     LOG.info("Pair ref=%s, obs=%s", ref_path, obs_path)
     if ref_path and obs_path:
-        ok, size, good, bad = process(ref_path, file_has_content, good, bad)
+        ok, size, _, _ = process(ref_path, file_has_content, good, bad)
         LOG.info("  Found ref=%s to be %s with size %s bytes", ref_path, "OK" if ok else "NOK", size)
         ok, width, height, info = shape_of_png(ref_path)
         if ok:
@@ -102,7 +102,7 @@ def process_pair(good, bad, obs_path, present, present_is_dir, ref_path):
         else:
             message = info["error"]
         LOG.info("    Analyzed ref=%s as PNG to be %s with %s", ref_path, "OK" if ok else "NOK", message)
-        ok, size, good, bad = process(obs_path, file_has_content, good, bad)
+        ok, size, _, _ = process(obs_path, file_has_content, good, bad)
         LOG.info("  Found obs=%s to be %s with size %s bytes", obs_path, "OK" if ok else "NOK", size)
         ok, width, height, info = shape_of_png(obs_path)
         if ok:
@@ -116,8 +116,10 @@ def process_pair(good, bad, obs_path, present, present_is_dir, ref_path):
         if mismatch:
             LOG.info("  Mismatch of obs=%s is %d of %d pixels or %0.1f %%",
                      obs_path, mismatch, pixel_count, round(100 * mismatch / pixel_count, 1))
+            bad += 1
         else:
             LOG.info("  Match of obs=%s", obs_path)
+            good += 1
     else:
         bad += 1
 
@@ -205,10 +207,10 @@ def main(argv=None, abort=False, debug=None, threshold=None):
     good, bad = 0, 0
 
     if not present_is_dir:
-        good, bad = process_pair(bad, good, future, present, present_is_dir, past)
+        good, bad = process_pair(good, bad, future, present, present_is_dir, past)
     else:
         for ref_path, obs_path in matching_zipper(past, future):
-            good, bad = process_pair(bad, good, obs_path, present, present_is_dir, ref_path)
+            good, bad = process_pair(good, bad, obs_path, present, present_is_dir, ref_path)
 
     LOG.info("Finished comparisons finding good=%d and bad=%d in %s mode", good, bad, mode_display)
 
