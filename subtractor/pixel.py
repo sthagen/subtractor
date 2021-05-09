@@ -34,7 +34,9 @@ def pil_to_flatten_data(img):
 
 
 def diff_img(ref, obs, sub):
-    """Read from ref and obs, calculate the subtraction, output at sub and return the mismatch pixel count."""
+    """Read from ref and obs, calculate the subtraction, output at sub.
+
+    Returns the mismatch pixel count, width, and height."""
     img_a = Image.open(ref)
     img_b = Image.open(obs)
     width, height = img_a.size
@@ -42,4 +44,4 @@ def diff_img(ref, obs, sub):
     mismatch = pixelmatch(img_a, img_b, img_diff, **OPTIONS)
 
     img_diff.save(sub)
-    return mismatch
+    return mismatch, width, height
