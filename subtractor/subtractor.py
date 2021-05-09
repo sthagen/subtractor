@@ -10,6 +10,9 @@ import sys
 
 from pixelmatch import pixelmatch
 
+from subtractor.stream import visit
+
+
 ENCODING = "utf-8"
 
 APP = "subtractor"
@@ -41,100 +44,9 @@ def init_logger(name=None, level=None):
     LOG = logging.getLogger(APP if name is None else name)
     LOG.propagate = True
 
-
-def walk_tree_explicit(base_path):
-    """Visit the files in the folders below base path."""
-    if base_path.is_file():
-        yield base_path
-    else:
-        for entry in base_path.iterdir():
-            if entry.is_dir():
-                for file_path in entry.iterdir():
-                    yield file_path
-            else:
-                yield entry
-
-
-def visit(tree_or_file_path):
-    """Visit tree and yield the leaves."""
-    thing = pathlib.Path(tree_or_file_path)
-    if thing.is_file():
-        yield thing
-    else:
-        for path in thing.rglob("*"):
-            yield path
-
-
 def slugify(error):
     """Replace newlines by space."""
     return str(error).replace("\n", "")
-
-
-def parse_csv(path):
-    """Opinionated csv as config parser returning the COHDA protocol."""
-    if not path.stat().st_size:
-        return False, "ERROR: Empty CSV file"
-
-    with open(path, newline="") as handle:
-        try:
-            try:
-                dialect = csv.Sniffer().sniff(handle.read(1024), ",\t; ")
-                handle.seek(0)
-            except csv.Error as err:
-                if "could not determine delimiter" in str(err).lower():
-                    dialect = csv.Dialect()
-                    dialect.delimiter = ","
-                    dialect.quoting = csv.QUOTE_NONE
-                    dialect.strict = True
-                else:
-                    return False, slugify(err)
-            try:
-                reader = csv.reader(handle, dialect)
-                for _ in reader:
-                    pass
-                return True, ""
-            except csv.Error as err:
-                return False, slugify(err)
-        except (Exception, csv.Error) as err:
-            return False, slugify(err)
-
-
-def parse_ini(path):
-    """Simple ini as config parser returning the COHDA protocol."""
-    config = configparser.ConfigParser()
-    try:
-        config.read(path)
-        return True, ""
-    except (
-        configparser.NoSectionError,
-        configparser.DuplicateSectionError,
-        configparser.DuplicateOptionError,
-        configparser.NoOptionError,
-        configparser.InterpolationDepthError,
-        configparser.InterpolationMissingOptionError,
-        configparser.InterpolationSyntaxError,
-        configparser.InterpolationError,
-        configparser.MissingSectionHeaderError,
-        configparser.ParsingError,
-    ) as err:
-        return False, slugify(err)
-
-
-def parse_json(path):
-    """Simple json as config parser returning the COHDA protocol."""
-    return parse_generic(path, json.load)
-
-
-def parse_generic(path, loader, loader_options=None):
-    """Simple generic parser proxy."""
-    if loader_options is None:
-        loader_options = {}
-    with open(path, "rt", encoding="utf-8") as handle:
-        try:
-            _ = loader(handle, **loader_options)
-            return True, ""
-        except Exception as err:
-            return False, slugify(err)
 
 
 def process(path, handler, success, failure):
