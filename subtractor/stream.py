@@ -4,19 +4,6 @@
 import pathlib
 
 
-def walk_tree_explicit(base_path):
-    """Visit the files in the folders below base path."""
-    if base_path.is_file():
-        yield base_path
-    else:
-        for entry in base_path.iterdir():
-            if entry.is_dir():
-                for file_path in entry.iterdir():
-                    yield file_path
-            else:
-                yield entry
-
-
 def final_suffix_in(path, suffixes=(".png",)):
     """Simple post filter on the final suffix (including the dots)."""
     if path.is_dir():
