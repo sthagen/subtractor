@@ -8,8 +8,7 @@ import logging
 import pathlib
 import sys
 
-from pixelmatch import pixelmatch
-
+from subtractor.pixel import shape_of_png
 from subtractor.stream import final_suffix_in, visit
 
 
@@ -96,6 +95,8 @@ def main(argv=None, abort=False, debug=None):
         for path in visit(tree, **visit_options):
             ok, message, good, bad = process(path, file_has_content, good, bad)
             LOG.info("Found %s to be %s with message %s", path, "OK" if ok else "NOK", message)
+            ok, message = shape_of_png(path)
+            LOG.info("Analyzed %s as PNG to be %s with %s", path, "OK" if ok else "NOK", message)
 
     print(f"{'OK' if not bad else 'FAIL'}")
 
