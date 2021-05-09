@@ -10,7 +10,7 @@ import sys
 
 from pixelmatch import pixelmatch
 
-from subtractor.stream import visit
+from subtractor.stream import final_suffix_in, visit
 
 
 ENCODING = "utf-8"
@@ -44,9 +44,15 @@ def init_logger(name=None, level=None):
     LOG = logging.getLogger(APP if name is None else name)
     LOG.propagate = True
 
+
 def slugify(error):
     """Replace newlines by space."""
     return str(error).replace("\n", "")
+
+
+def file_has_content(path: pathlib.Path) -> (bool, str):
+    """Simplistic handler to develop generic processing function."""
+    return path.is_file() and path.stat().st_size, ""
 
 
 def process(path, handler, success, failure):
@@ -76,17 +82,18 @@ def main(argv=None, abort=False, debug=None):
         num_trees,
         "" if num_trees == 1 else "s",
     )
-    failures = 0
+    good, bad = 0, 0
+    visit_options = {
+        "pre_filter": sorted,
+        "pre_filter_options": {"reverse": True},
+        "post_filter": final_suffix_in,
+        "post_filter_options": {"suffixes": (".png",)},
+    }
     for tree in forest:
-        for path in visit(tree):
-            if not path.is_file():
-                continue
+        for path in visit(tree, **visit_options):
+            ok, message, good, bad = process(path, file_has_content, good, bad)
+            LOG.info("Found %s to be %s", path, "OK" if ok else "NOK")
 
-            final_suffix = "" if not path.suffixes else path.suffixes[-1].lower()
-
-            if final_suffix == ".png":
-                LOG.info("Found %s", path)
-
-    print(f"{'OK' if not failures else 'FAIL'}")
+    print(f"{'OK' if not bad else 'FAIL'}")
 
     return 0, ""

@@ -10,6 +10,7 @@ from subtractor.stream import final_suffix_in, visit
 FIXTURE_ROOT = pathlib.Path("tests", "fixtures")
 DEFAULT_FILE_NAME = "empty.png"
 SINGLE_FILE_FOLDER = pathlib.Path(FIXTURE_ROOT, "single_file")
+SINGLE_FILE_PATH_EMPTY_PNG = pathlib.Path(SINGLE_FILE_FOLDER, DEFAULT_FILE_NAME)
 TWO_FILES_FOLDER = pathlib.Path(FIXTURE_ROOT, "two_files")
 TWO_FILES_EMPTY_PNG = pathlib.Path(TWO_FILES_FOLDER, DEFAULT_FILE_NAME)
 TWO_FILES_ANOTHER_EMPTY_PNG = pathlib.Path(TWO_FILES_FOLDER, "another_empty.png")
@@ -25,20 +26,17 @@ TWIN_TREE_PATHS_SET = {
 
 
 def test_visit_ok_test_single_fixture_file():
-    empty_png = pathlib.Path(SINGLE_FILE_FOLDER, DEFAULT_FILE_NAME)
-    visitor = visit(empty_png)
+    visitor = visit(SINGLE_FILE_PATH_EMPTY_PNG)
     assert isinstance(visitor, Generator)
-    assert next(visitor) == empty_png
+    assert next(visitor) == SINGLE_FILE_PATH_EMPTY_PNG
     with pytest.raises(StopIteration):
         next(visitor)
 
 
 def test_visit_ok_test_fixture_folder_with_single_file():
-    single_file_folder = pathlib.Path(SINGLE_FILE_FOLDER)
-    empty_png = pathlib.Path(single_file_folder, DEFAULT_FILE_NAME)
-    visitor = visit(single_file_folder)
+    visitor = visit(SINGLE_FILE_FOLDER)
     assert isinstance(visitor, Generator)
-    assert next(visitor) == empty_png
+    assert next(visitor) == SINGLE_FILE_PATH_EMPTY_PNG
     with pytest.raises(StopIteration):
         next(visitor)
 
