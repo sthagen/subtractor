@@ -17,11 +17,14 @@ def walk_tree_explicit(base_path):
                 yield entry
 
 
-def visit(tree_or_file_path):
-    """Visit tree and yield the leaves."""
+def visit(tree_or_file_path, a_filter=None):
+    """Visit tree and yield the leaves optionally filtered."""
     thing = pathlib.Path(tree_or_file_path)
     if thing.is_file():
         yield thing
-    else:
+    elif a_filter is None:
         for path in thing.rglob("*"):
+            yield path
+    else:
+        for path in a_filter(thing.rglob("*")):
             yield path
