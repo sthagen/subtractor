@@ -60,3 +60,8 @@ def test_slugify_nok_with_single_newline_but_empty_source_and_target():
 def test_slugify_nok_with_single_newline_but_empty_source():
     text = "one line\nanother line"
     assert slugify(text, these=[]) == text
+
+
+def test_slugify_nok_with_single_newline_but_empty_target():
+    text = "one line\nanother line"
+    assert slugify(text, those=[]) == text
