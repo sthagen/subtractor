@@ -14,9 +14,22 @@ def test_file_has_content_nok_non_existing_file():
 
 
 def test_matching_zipper_ok_empty():
-    magic_zipper = matching_zipper('', '')
+    class SomeSplicer:
+        @staticmethod
+        def split(thing):
+            return thing[:-2], thing[-2:]
+
+        @staticmethod
+        def merge(left, right):
+            return left + [right]
+
+    def parts_of(sequence, splicer: SomeSplicer, options):
+        for word in sequence:
+            yield splicer.split(word)
+
+    magic_zipper = matching_zipper(['asd'], ['asd'], SomeSplicer(), parts_of, None)
     left, right = next(magic_zipper)
-    assert left == right == pathlib.Path('_a.png')
+    assert left == right
 
 
 def test_process_ok_test_mock_valid_handler():

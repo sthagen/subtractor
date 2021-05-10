@@ -145,23 +145,36 @@ def causal_triplet(trunks) -> tuple:
     return past, present, future
 
 
-def matching_zipper(ref, obs):
+class Splicer:
+    """Hollow splicer - split and merge."""
+    @staticmethod
+    def split(thing):
+        """Split thing into things."""
+        return thing.parts[:-1], thing.parts[-1]
+
+    @staticmethod
+    def merge(left, right):
+        """Merge left and right back into thing."""
+        return pathlib.Path(left, right)
+
+
+def names_of(root, splicer: Splicer, options):
+    """Yield file names of root."""
+    for path in visit(root, **options):
+        yield splicer.split(path)
+
+
+def matching_zipper(ref, obs, splicer: Splicer, gen, gen_options: dict):
     """Generate a complete matching zipper for the longest matching sequence."""
-    r_p = [path.parts[-1] for path in visit(ref, **VISIT_OPTIONS)]
-    x_p = {name: (name, None) for name in r_p}
-    o_p = [path.parts[-1] for path in visit(obs, **VISIT_OPTIONS)]
-    for name in o_p:
-        if name in x_p:
-            x_p[name] = (name, name)
-        else:
-            x_p[name] = (None, name)
+    x_p = {name: (name, None) for _, name in gen(ref, splicer, gen_options)}
+    for _, name in gen(obs, splicer, gen_options):
+        x_p[name] = (name, name) if name in x_p else (None, name)
     for key in sorted(x_p):
         r, o = x_p[key]
-        if r is not None:
-            r = pathlib.Path(ref, r)
-        if o is not None:
-            o = pathlib.Path(obs, o)
-        yield r, o
+        yield (
+            r if r is None else splicer.merge(ref, r),
+            o if o is None else splicer.merge(obs, o)
+        )
 
 
 def main(argv=None, abort=False, debug=None, threshold=None):
@@ -199,7 +212,7 @@ def main(argv=None, abort=False, debug=None, threshold=None):
     if not present_is_dir:
         good, bad = process_pair(good, bad, future, present, past)
     else:
-        for ref_path, obs_path in matching_zipper(past, future):
+        for ref_path, obs_path in matching_zipper(past, future, Splicer(), names_of, VISIT_OPTIONS):
             good, bad = process_pair(good, bad, obs_path, present, ref_path)
             if abort and bad:
                 LOG.error("Requested abort and encountered a bad pair")
