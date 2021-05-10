@@ -4,7 +4,7 @@ import pathlib
 
 import pytest  # type: ignore
 
-from subtractor.subtractor import file_has_content, process, slugify
+from subtractor.subtractor import file_has_content, matching_zipper, process, slugify
 
 
 def test_file_has_content_nok_non_existing_file():
@@ -12,7 +12,13 @@ def test_file_has_content_nok_non_existing_file():
     assert not file_not_there.exists(), f"WARNING: The path {file_not_there} SHOULD not exist, but does."
     assert file_has_content(file_not_there) == (False, f'{str(file_not_there)} is no file')
 
-    
+
+def test_matching_zipper_ok_empty():
+    magic_zipper = matching_zipper('', '')
+    left, right = next(magic_zipper)
+    assert left == right == pathlib.Path('_a.png')
+
+
 def test_process_ok_test_mock_valid_handler():
     def mock_valid_message(arg):
         _ = arg
