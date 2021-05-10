@@ -177,7 +177,7 @@ def matching_zipper(ref, obs, splicer: Splicer, gen, gen_options: dict):
         )
 
 
-def main(argv=None, abort=False, debug=None, threshold=None):
+def main(argv=None, abort=False, debug=None, threshold=None, diff_template=''):
     """Drive the subtractor.
     This function acts as the command line interface backend.
     There is some duplication to support testability.
@@ -188,6 +188,8 @@ def main(argv=None, abort=False, debug=None, threshold=None):
         print("Usage: subtractor past future [present]")
         return 0, "USAGE"
 
+    if diff_template:
+        LOG.info("Requested external diff tool per template(%s)", diff_template)
     LOG.debug("Guarded dispatch forest=%s", forest)
     past, present, future = causal_triplet(forest)
 
