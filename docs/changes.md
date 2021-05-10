@@ -1,6 +1,6 @@
 # Change History
 
-## 0.0.4 (2021-05-11)
+## 0.0.4 (2021-05-10)
 
 * Added hook for external diff tool
 * Simplified API

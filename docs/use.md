@@ -160,3 +160,31 @@ $ SUBTRACTOR_DEBUG=1 python -m subtractor tests/fixtures/ref_obs/{ref,obs}
 2021-05-09T22:39:51.473 INFO [subtractor]: Finished comparisons finding good=2 and bad=0 in folder mode
 OK
 ```
+
+Use external diff tool:
+```bash
+$ SUBTRACTOR_DIFF_TEMPLATE='diff --text $ref $obs' python -m subtractor tests/fixtures/deviating/{ref,obs}
+2021-05-10T22:08:05.355 INFO [subtractor]: Requested external diff tool per template(diff --text $ref $obs)
+2021-05-10T22:08:05.356 INFO [subtractor]: Starting comparisons visiting past=tests/fixtures/deviating/ref and future=tests/fixtures/deviating/obs in folder mode
+2021-05-10T22:08:05.356 INFO [subtractor]:   Threshold for pixel mismatch is 1 %
+2021-05-10T22:08:05.357 INFO [subtractor]: Pair ref=tests/fixtures/deviating/ref/bright_red_half_transparent.png, obs=tests/fixtures/deviating/obs/bright_red_half_transparent.png
+2021-05-10T22:08:05.357 INFO [subtractor]:   Found ref=tests/fixtures/deviating/ref/bright_red_half_transparent.png to be OK with size 290 bytes
+2021-05-10T22:08:05.360 INFO [subtractor]:     Analyzed ref=tests/fixtures/deviating/ref/bright_red_half_transparent.png as PNG to be OK with shape 2x2
+2021-05-10T22:08:05.360 INFO [subtractor]:   Found obs=tests/fixtures/deviating/obs/bright_red_half_transparent.png to be OK with size 290 bytes
+2021-05-10T22:08:05.361 INFO [subtractor]:     Analyzed obs=tests/fixtures/deviating/obs/bright_red_half_transparent.png as PNG to be OK with shape 2x2
+2021-05-10T22:08:05.370 INFO [subtractor]: b'3,4c3,4\n< \x00\x00\x00\rIHDR\x00\x00\x00\x02\x00\x00\x00\x02\x01\x03\x00\x00\x00Hx\x9fg\x00\x00\x00\x04gAMA\x00\x00\xb1\x8f\x0b\xfca\x05\x00\x00\x00 cHRM\x00\x00 ...
+2021-05-10T22:08:05.371 INFO [subtractor]: Pair ref=tests/fixtures/deviating/ref/bright_red_or_blue.png, obs=tests/fixtures/deviating/obs/bright_red_or_blue.png
+2021-05-10T22:08:05.371 INFO [subtractor]:   Found ref=tests/fixtures/deviating/ref/bright_red_or_blue.png to be OK with size 276 bytes
+2021-05-10T22:08:05.373 INFO [subtractor]:     Analyzed ref=tests/fixtures/deviating/ref/bright_red_or_blue.png as PNG to be OK with shape 10x10
+2021-05-10T22:08:05.373 INFO [subtractor]:   Found obs=tests/fixtures/deviating/obs/bright_red_or_blue.png to be OK with size 276 bytes
+2021-05-10T22:08:05.374 INFO [subtractor]:     Analyzed obs=tests/fixtures/deviating/obs/bright_red_or_blue.png as PNG to be OK with shape 10x10
+2021-05-10T22:08:05.383 INFO [subtractor]: b'5c5\n< \x01\x03\x00\x00\x00\xb7\xfc]\xfe\x00\x00\x00\x04gAMA\x00\x00\xb1\x8f\x0b\xfca\x05\x00\x00\x00 cHRM\x00\x00z&\x00\x00\x80\x84\x00\x00\xfa\x00\x00\x00\x80\x ...
+2021-05-10T22:08:05.383 INFO [subtractor]: Pair ref=tests/fixtures/deviating/ref/bright_red_or_green_dunno.png, obs=tests/fixtures/deviating/obs/bright_red_or_green_dunno.png
+2021-05-10T22:08:05.383 INFO [subtractor]:   Found ref=tests/fixtures/deviating/ref/bright_red_or_green_dunno.png to be OK with size 276 bytes
+2021-05-10T22:08:05.385 INFO [subtractor]:     Analyzed ref=tests/fixtures/deviating/ref/bright_red_or_green_dunno.png as PNG to be OK with shape 10x10
+2021-05-10T22:08:05.385 INFO [subtractor]:   Found obs=tests/fixtures/deviating/obs/bright_red_or_green_dunno.png to be OK with size 6245 bytes
+2021-05-10T22:08:05.387 INFO [subtractor]:     Analyzed obs=tests/fixtures/deviating/obs/bright_red_or_green_dunno.png as PNG to be OK with shape 10x10
+2021-05-10T22:08:05.395 INFO [subtractor]: b'5c5,91\n< \x01\x03\x00\x00\x00\xb7\xfc]\xfe\x00\x00\x00\x04gAMA\x00\x00\xb1\x8f\x0b\xfca\x05\x00\x00\x00 cHRM\x00\x00z&\x00\x00\x80\x84\x00\x00\xfa\x00\x00\x00\x8 ...
+2021-05-10T22:08:05.395 INFO [subtractor]: Finished comparisons finding good=0 and bad=3 in folder mode
+FAIL
+```
