@@ -1,5 +1,13 @@
 # Change History
 
+## 0.0.4 (2021-05-11)
+
+* Added hook for external diff tool
+* Simplified API
+* Decoupled helper functions
+* Enlarged test coverage
+* Fourth release to PyPI
+
 ## 0.0.3 (2021-05-10)
 
 * Hotfix for a typo in dependency declaration for PyPI
