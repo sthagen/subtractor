@@ -3,6 +3,7 @@
 """Do the diff."""
 import logging
 import pathlib
+import subprocess
 import sys
 
 from subtractor.pixel import diff_img, shape_of_png
@@ -31,6 +32,9 @@ VISIT_OPTIONS = {
     "post_filter": final_suffix_in,
     "post_filter_options": {"suffixes": (".png",)},
 }
+
+SLUG_CAP = 164
+SLUG_ETC = " ..."
 
 
 def init_logger(name=None, level=None):
@@ -87,30 +91,45 @@ def process(path, handler, success, failure):
     return False, message, success, failure + 1
 
 
-def process_pair(good, bad, obs_path, present, ref_path):
+def process_pair(invoke, good, bad, obs_path, present, ref_path):
     """The main per pair processing code."""
     LOG.info("Pair ref=%s, obs=%s", ref_path, obs_path)
     if ref_path and obs_path:
-        ok, size, _, _ = process(ref_path, file_has_content, good, bad)
-        LOG.info("  Found ref=%s to be %s with size %s bytes", ref_path, "OK" if ok else "NOK", size)
-        ok, width, height, info = shape_of_png(ref_path)
+        ok_ref, size, _, _ = process(ref_path, file_has_content, good, bad)
+        LOG.info("  Found ref=%s to be %s with size %s bytes", ref_path, "OK" if ok_ref else "NOK", size)
+        ok_ref, width, height, info = shape_of_png(ref_path)
         LOG.info("    Analyzed ref=%s as PNG to be %s with %s",
-                 ref_path, "OK" if ok else "NOK", f"shape {width}x{height}" if ok else info["error"])
-        ok, size, _, _ = process(obs_path, file_has_content, good, bad)
-        LOG.info("  Found obs=%s to be %s with size %s bytes", obs_path, "OK" if ok else "NOK", size)
-        ok, width, height, info = shape_of_png(obs_path)
+                 ref_path, "OK" if ok_ref else "NOK", f"shape {width}x{height}" if ok_ref else info["error"])
+        ok_obs, size, _, _ = process(obs_path, file_has_content, good, bad)
+        LOG.info("  Found obs=%s to be %s with size %s bytes", obs_path, "OK" if ok_obs else "NOK", size)
+        ok_obs, width, height, info = shape_of_png(obs_path)
         LOG.info("    Analyzed obs=%s as PNG to be %s with %s",
-                 obs_path, "OK" if ok else "NOK", f"shape {width}x{height}" if ok else info["error"])
-        pixel_count = width * height
+                 obs_path, "OK" if ok_obs else "NOK", f"shape {width}x{height}" if ok_obs else info["error"])
         present_path = pathlib.Path(present, f"diff-of-{obs_path.parts[-1]}") if present.is_dir() else present
-        mismatch, _, _ = diff_img(ref_path, obs_path, present_path)
-        if mismatch:
-            LOG.info("  Mismatch of obs=%s is %d of %d pixels or %0.1f %%",
-                     obs_path, mismatch, pixel_count, round(100 * mismatch / pixel_count, 1))
+        if not all([ok_ref, ok_obs]):
             bad += 1
         else:
-            LOG.info("  Match of obs=%s", obs_path)
-            good += 1
+            if not invoke:
+                pixel_count = width * height
+                mismatch, _, _ = diff_img(ref_path, obs_path, present_path)
+                if mismatch:
+                    LOG.info("  Mismatch of obs=%s is %d of %d pixels or %0.1f %%",
+                             obs_path, mismatch, pixel_count, round(100 * mismatch / pixel_count, 1))
+                    bad += 1
+                else:
+                    LOG.info("  Match of obs=%s", obs_path)
+                    good += 1
+            else:
+                args = invoke.replace("$ref", str(ref_path)).replace("$obs", str(obs_path)).split()
+                completed = subprocess.run(args, capture_output=True)
+                if not completed.returncode:
+                    good += 1
+                else:
+                    bad += 1
+                slug = slugify(completed.stdout)
+                if len(slug) > SLUG_CAP:
+                    slug = slug[:SLUG_CAP] + SLUG_ETC
+                LOG.info(slug)
     else:
         bad += 1
 
@@ -190,6 +209,7 @@ def main(argv=None, abort=False, debug=None, threshold=None, diff_template=''):
 
     if diff_template:
         LOG.info("Requested external diff tool per template(%s)", diff_template)
+
     LOG.debug("Guarded dispatch forest=%s", forest)
     past, present, future = causal_triplet(forest)
 
@@ -212,10 +232,10 @@ def main(argv=None, abort=False, debug=None, threshold=None, diff_template=''):
     good, bad = 0, 0
 
     if not present_is_dir:
-        good, bad = process_pair(good, bad, future, present, past)
+        good, bad = process_pair(diff_template, good, bad, future, present, past)
     else:
         for ref_path, obs_path in matching_zipper(past, future, Splicer(), names_of, VISIT_OPTIONS):
-            good, bad = process_pair(good, bad, obs_path, present, ref_path)
+            good, bad = process_pair(diff_template, good, bad, obs_path, present, ref_path)
             if abort and bad:
                 LOG.error("Requested abort and encountered a bad pair")
                 break
