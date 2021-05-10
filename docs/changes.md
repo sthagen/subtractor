@@ -1,5 +1,10 @@
 # Change History
 
+## 0.0.3 (2021-05-10)
+
+* Hotfix for a typo in dependency declaration for PyPI
+* Third release to PyPI
+
 ## 0.0.2 (2021-05-09)
 
 * Set logging level to debug per `SUBTRACTOR_DEBUG` env variable
