@@ -40,7 +40,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "Pillow",
-        "pixelmatcher",
+        "pixelmatch",
         "pypng",
     ],
     entry_points={
