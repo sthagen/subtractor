@@ -10,7 +10,7 @@ all:
 
 clean:
 	@echo "- removing output files"
-	@rm -f *.log
+	@rm -f *.log foo
 	@rm -fr $$(find tests/fixtures -print | grep "diff-")
 	@git status
 
