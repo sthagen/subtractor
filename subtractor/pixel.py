@@ -35,8 +35,8 @@ def diff_img(ref, obs, sub):
     """Read from ref and obs, calculate the subtraction, output at sub.
 
     Returns the mismatch pixel count, width, and height."""
-    img_a = Image.open(ref)
-    img_b = Image.open(obs)
+    img_a = read_img(ref)
+    img_b = read_img(obs)
     width, height = img_a.size
     img_diff = Image.new("RGB", (width, height))
     mismatch = pixelmatch(img_a, img_b, img_diff, **OPTIONS)
