@@ -1,5 +1,18 @@
 # Example Usage
 
+You can add four environment variables (and mix them independently) per `-e VAR_NAME=value` to modify the behavior of the subtractor:
+
+* `-e SUBTRACTOR_ABORT=1` (1 or any other truth value) will abort processing on first file not found in both folders or mismatch of same name files
+* `-e SUBTRACTOR_DEBUG=1` (1 or any other truth value) lowers the log level to debug
+* `-e SUBTRACTOR_DIFF_TEMPLATE='tool --options xyz $ref $obs'` to execute that `tool` with options `xyz`; `$ref` and `$obs` are mandatory and will receive the respective paths.
+* `-e SUBTRACTOR_THRESHOLD=0.05` (0.05 or any other float value in [0, 1])  sets the mismatch pixel ratio threshold before a difference is considered a failure
+
+There is some temporary magic implemented as template DSL to enable external tool use that requires a parameter file. 
+The tokens `:$file:`and `:$name:` (none or both must be present to succeed) will result in translating 
+`'what ever @foo.txt:$file:CONTENT:$name:foo.txt'`into an executing vector of `["what", "ever", "@foo.txt"]` for the subprocess and 
+the creation of a file `foo.txt` (because of the trailing part after the `:$name:`token) where 
+for every invocation the usual `$ref` and `$obs`are also performed on the `CONTENT`(the text between the `:$file:`and `:$name:` tokens.
+
 Folders with even different files (not present in the other folder):
 ```
 $ python -m subtractor tests/fixtures/different/{ref,obs}
@@ -187,4 +200,25 @@ $ SUBTRACTOR_DIFF_TEMPLATE='diff --text $ref $obs' python -m subtractor tests/fi
 2021-05-10T22:08:05.395 INFO [subtractor]: b'5c5,91\n< \x01\x03\x00\x00\x00\xb7\xfc]\xfe\x00\x00\x00\x04gAMA\x00\x00\xb1\x8f\x0b\xfca\x05\x00\x00\x00 cHRM\x00\x00z&\x00\x00\x80\x84\x00\x00\xfa\x00\x00\x00\x8 ...
 2021-05-10T22:08:05.395 INFO [subtractor]: Finished comparisons finding good=0 and bad=3 in folder mode
 FAIL
+```
+
+Contrived and made up use case with diff template and param file magic:
+```bash
+$ SUBTRACTOR_DIFF_TEMPLATE='echo $ref $obs @foo:$file:asd=42 $ref $obs:$name:foo' python -m subtractor tests/fixtures/ref_obs/{ref,obs}/ff0000_2x2.png
+2021-05-11T23:33:03.183 INFO [subtractor]: Requested external diff tool per template(echo $ref $obs @foo:$file:asd=42 $ref $obs:$name:foo)
+2021-05-11T23:33:03.183 INFO [subtractor]: Detected magic (:$file:) in template
+2021-05-11T23:33:03.183 INFO [subtractor]: Parsed diff template (echo $ref $obs @foo:$file:asd=42 $ref $obs:$name:foo) into executor ...
+2021-05-11T23:33:03.183 INFO [subtractor]:  ...   into executor ({'executor': 'echo $ref $obs @foo', 'param_file_content': 'asd=42 $ref $obs', 'param_file_name': 'foo'})
+2021-05-11T23:33:03.183 INFO [subtractor]: Starting comparisons visiting past=tests/fixtures/ref_obs/ref/ff0000_2x2.png and future=tests/fixtures/ref_obs/obs/ff0000_2x2.png in file mode
+2021-05-11T23:33:03.183 INFO [subtractor]:   Threshold for pixel mismatch is 1 %
+2021-05-11T23:33:03.183 INFO [subtractor]: Pair ref=tests/fixtures/ref_obs/ref/ff0000_2x2.png, obs=tests/fixtures/ref_obs/obs/ff0000_2x2.png
+2021-05-11T23:33:03.183 INFO [subtractor]:   Found ref=tests/fixtures/ref_obs/ref/ff0000_2x2.png to be OK with size 277 bytes
+2021-05-11T23:33:03.185 INFO [subtractor]:     Analyzed ref=tests/fixtures/ref_obs/ref/ff0000_2x2.png as PNG to be OK with shape 2x2
+2021-05-11T23:33:03.185 INFO [subtractor]:   Found obs=tests/fixtures/ref_obs/obs/ff0000_2x2.png to be OK with size 277 bytes
+2021-05-11T23:33:03.186 INFO [subtractor]:     Analyzed obs=tests/fixtures/ref_obs/obs/ff0000_2x2.png as PNG to be OK with shape 2x2
+2021-05-11T23:33:03.190 INFO [subtractor]: b'tests/fixtures/ref_obs/ref/ff0000_2x2.png tests/fixtures/ref_obs/obs/ff0000_2x2.png @foo\n'
+2021-05-11T23:33:03.190 INFO [subtractor]: Finished comparisons finding good=1 and bad=0 in file mode
+OK
+$ cat foo
+asd=42 tests/fixtures/ref_obs/ref/ff0000_2x2.png tests/fixtures/ref_obs/obs/ff0000_2x2.png%
 ```
