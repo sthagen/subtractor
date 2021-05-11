@@ -28,6 +28,14 @@ def test_main_ok_no_args(capsys):
     assert not err
 
 
+def test_main_nok_invalid_diff_tempalte(capsys):
+    with pytest.raises(SystemExit, match="2"):
+        assert cli.main([], debug=False, diff_template="invalid")
+    out, err = capsys.readouterr()
+    assert "error: when using external diff tool, template requires mention of $ref and $obs" in out.lower()
+    assert not err
+
+
 def test_main_nok_non_existing_file(capsys):
     file_not_there = pathlib.Path("no", "file", "here")
     assert not file_not_there.exists(), f"WARNING: The path {file_not_there} SHOULD not exist, but does."
