@@ -20,6 +20,12 @@ RGB_RED_NAME = "ff0000_2x2.png"
 REF_CHILD_RGB_RED_PNG = pathlib.Path(REF_CHILD_FOLDER, RGB_RED_NAME)
 OBS_CHILD_RGB_RED_PNG = pathlib.Path(OBS_CHILD_FOLDER, RGB_RED_NAME)
 
+REF_OBS_TWO_ROOT = pathlib.Path(FIXTURE_ROOT, "ref_obs_two")
+REF2_CHILD_FOLDER = pathlib.Path(REF_OBS_TWO_ROOT, "ref")
+OBS2_CHILD_FOLDER = pathlib.Path(REF_OBS_TWO_ROOT, "obs")
+REF2_CHILD_RGB_RED_PNG = pathlib.Path(REF2_CHILD_FOLDER, RGB_RED_NAME)
+OBS2_CHILD_RGB_RED_PNG = pathlib.Path(OBS2_CHILD_FOLDER, RGB_RED_NAME)
+
 
 def test_main_ok_no_args(capsys):
     assert cli.main([], debug=False) == 0
@@ -126,4 +132,26 @@ def test_main_ok_test_fixtures_matching_png_files(caplog, capsys):
     assert f"match of obs={str(OBS_CHILD_RGB_RED_PNG)}" in lines[7].lower()
     assert "finished comparisons finding good=1 and bad=0 in file mode" in lines[8].lower()
     assert not lines[9].strip()
+
+
+def test_main_nok_folders_of_matching_png_files(caplog, capsys):
+    caplog.set_level(logging.INFO)
+    assert cli.main([REF2_CHILD_FOLDER, OBS2_CHILD_FOLDER], debug=False) == 0
+    out, err = capsys.readouterr()
+    assert "ok" == out.lower().strip()
+    assert not err
+    lines = caplog.text.lower().split("\n")
+    expected_log_line_count = 16
+    assert len(lines) == expected_log_line_count
+    assert "starting comparisons visiting past" in lines[0].lower()
+    assert "folder mode" in lines[0].lower()
+    assert "threshold for pixel mismatch is 1 %" in lines[1].lower()
+    assert "pair" in lines[2].lower()
+    for ndx in (3, 5):
+        assert "to be ok with size 277 bytes" in lines[ndx].lower()
+    for ndx in (4, 6):
+        assert "as png to be ok with shape 2x2" in lines[ndx].lower()
+    assert f"match of obs={str(OBS2_CHILD_RGB_RED_PNG)}" in lines[7].lower()
+    assert "finished comparisons finding good=2 and bad=0 in folder mode" in lines[14].lower()
+    assert not lines[15].strip()
 
