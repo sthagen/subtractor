@@ -7,6 +7,7 @@ import pytest  # type: ignore
 
 import subtractor.cli as cli
 
+ENCODING = "utf-8"
 
 FIXTURE_ROOT = pathlib.Path("tests", "fixtures")
 DEFAULT_FILE_NAME = "empty.png"
@@ -47,7 +48,7 @@ def test_main_nok_valid_diff_template(caplog, capsys):
     diff_template = "echo $ref $obs"
     assert cli.main([REF_CHILD_RGB_RED_PNG, OBS_CHILD_RGB_RED_PNG], debug=False, diff_template=diff_template) == 0
     out, err = capsys.readouterr()
-    assert "ok" == out.lower().strip()
+    assert out.lower().strip() == "ok"
     assert not err
     lines = caplog.text.lower().split("\n")
     expected_log_line_count = 13
@@ -66,6 +67,26 @@ def test_main_nok_valid_diff_template(caplog, capsys):
     # assert f"{str(REF_CHILD_RGB_RED_PNG)} {str(OBS_CHILD_RGB_RED_PNG)} " in str(lines[8]).lower()
     assert "finished comparisons finding good=1 and bad=0 in file mode" in lines[11].lower()
     assert not lines[12].strip()
+
+
+def test_main_nok_valid_diff_param_file_template(caplog, capsys):
+    caplog.set_level(logging.CRITICAL)
+    param_file_name = "foo"
+    content_template = 'asd=42 $ref $obs'
+    expected_content = content_template.replace("$ref", str(REF_CHILD_RGB_RED_PNG)).replace("$obs", str(OBS_CHILD_RGB_RED_PNG))
+    diff_template = f'echo $ref $obs @{param_file_name}:$file:{content_template}:$name:{param_file_name}'
+    assert cli.main([REF_CHILD_RGB_RED_PNG, OBS_CHILD_RGB_RED_PNG], debug=False, diff_template=diff_template) == 0
+    assert pathlib.Path(param_file_name).exists() and pathlib.Path(param_file_name).is_file()
+    with open(param_file_name, "rt", encoding=ENCODING) as handle:
+        read_content = handle.read()
+    assert read_content == expected_content
+    out, err = capsys.readouterr()
+    assert out.lower().strip() == "ok"
+    assert not err
+    lines = caplog.text.lower().split("\n")
+    expected_log_line_count = 1
+    assert len(lines) == expected_log_line_count
+    assert not lines[0].strip()
 
 
 def test_main_nok_non_existing_file(capsys):
@@ -118,7 +139,7 @@ def test_main_ok_test_fixtures_matching_png_files(caplog, capsys):
     caplog.set_level(logging.INFO)
     assert cli.main([REF_CHILD_RGB_RED_PNG, OBS_CHILD_RGB_RED_PNG], debug=False) == 0
     out, err = capsys.readouterr()
-    assert "ok" == out.lower().strip()
+    assert out.lower().strip() == "ok"
     assert not err
     lines = caplog.text.lower().split("\n")
     expected_log_line_count = 10
@@ -140,7 +161,7 @@ def test_main_nok_folders_of_matching_png_files(caplog, capsys):
     caplog.set_level(logging.INFO)
     assert cli.main([REF2_CHILD_FOLDER, OBS2_CHILD_FOLDER], debug=False) == 0
     out, err = capsys.readouterr()
-    assert "ok" == out.lower().strip()
+    assert out.lower().strip() == "ok"
     assert not err
     lines = caplog.text.lower().split("\n")
     expected_log_line_count = 16
