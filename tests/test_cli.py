@@ -78,6 +78,22 @@ def test_main_nok_test_fixtures_single_non_png_file(caplog, capsys):
     assert not err
 
 
+def test_main_nok_test_fixtures_file_and_folder(caplog, capsys):
+    caplog.set_level(logging.INFO)
+    assert cli.main([SINGLE_FILE_PATH_EMPTY_PNG, SINGLE_FILE_FOLDER], debug=False) == 2
+    out, err = capsys.readouterr()
+    assert "error: either all args are dirs or files, but no mix" in out.lower()
+    assert not err
+
+
+def test_main_nok_test_fixtures_folder_and_file(caplog, capsys):
+    caplog.set_level(logging.INFO)
+    assert cli.main([SINGLE_FILE_FOLDER, SINGLE_FILE_PATH_EMPTY_PNG], debug=False) == 2
+    out, err = capsys.readouterr()
+    assert "error: either all args are dirs or files, but no mix" in out.lower()
+    assert not err
+
+
 def test_main_nok_test_fixtures_single_png_file(caplog, capsys):
     caplog.set_level(logging.INFO)
     assert cli.main([REF_CHILD_RGB_RED_PNG], debug=False) == 0
