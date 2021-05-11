@@ -28,12 +28,36 @@ def test_main_ok_no_args(capsys):
     assert not err
 
 
-def test_main_nok_invalid_diff_tempalte(capsys):
+def test_main_nok_invalid_diff_template(capsys):
     with pytest.raises(SystemExit, match="2"):
-        assert cli.main([], debug=False, diff_template="invalid")
+        cli.main([], debug=False, diff_template="invalid")
     out, err = capsys.readouterr()
     assert "error: when using external diff tool, template requires mention of $ref and $obs" in out.lower()
     assert not err
+
+
+def test_main_nok_valid_diff_template(caplog, capsys):
+    caplog.set_level(logging.INFO)
+    diff_template = "echo $ref $obs"
+    assert cli.main([REF_CHILD_RGB_RED_PNG, OBS_CHILD_RGB_RED_PNG], debug=False, diff_template=diff_template) == 0
+    out, err = capsys.readouterr()
+    assert "ok" == out.lower().strip()
+    assert not err
+    lines = caplog.text.lower().split("\n")
+    expected_log_line_count = 11
+    assert len(lines) == expected_log_line_count
+    assert f"requested external diff tool per template({diff_template})" in lines[0].lower()
+    assert "starting comparisons visiting past" in lines[1].lower()
+    assert "file mode" in lines[1].lower()
+    assert "threshold for pixel mismatch is 1 %" in lines[2].lower()
+    assert "pair" in lines[3].lower()
+    for ndx in (4, 6):
+        assert "to be ok with size 277 bytes" in lines[ndx].lower()
+    for ndx in (5, 7):
+        assert "as png to be ok with shape 2x2" in lines[ndx].lower()
+    # assert f"{str(REF_CHILD_RGB_RED_PNG)} {str(OBS_CHILD_RGB_RED_PNG)} " in str(lines[8]).lower()
+    assert "finished comparisons finding good=1 and bad=0 in file mode" in lines[9].lower()
+    assert not lines[10].strip()
 
 
 def test_main_nok_non_existing_file(capsys):
