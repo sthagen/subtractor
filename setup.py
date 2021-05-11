@@ -18,7 +18,7 @@ README += (HERE / "docs" / "changes.md").read_text()
 # This call to setup() does all the work
 setup(
     name="subtractor",
-    version="0.0.4",
+    version="0.0.5",
     description="Pixels, pixels, pixels.",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -32,8 +32,10 @@ setup(
         "Topic :: Software Development :: Build Tools",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
     keywords="csv development diff ini json compare",
     packages=find_packages(exclude=("tests",)),
