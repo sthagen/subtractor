@@ -20,8 +20,8 @@ OBS_CHILD_RGB_RED_PNG = pathlib.Path(OBS_CHILD_FOLDER, RGB_RED_NAME)
 
 
 def test_shape_of_png_ok_test_single_fixture_rgb_file():
-    ok, width, height, info = shape_of_png(REF_CHILD_RGB_RED_PNG)
-    assert ok is True
+    ok_png, width, height, info = shape_of_png(REF_CHILD_RGB_RED_PNG)
+    assert ok_png is True
     assert width == 2 and height == 2
     facts = {
         'alpha': False,
@@ -38,8 +38,8 @@ def test_shape_of_png_ok_test_single_fixture_rgb_file():
 
 
 def test_shape_of_png_nok_test_single_fixture_non_png_file():
-    ok, width, height, info = shape_of_png(SINGLE_FILE_PATH_EMPTY_PNG)
-    assert ok is False
+    ok_png, width, height, info = shape_of_png(SINGLE_FILE_PATH_EMPTY_PNG)
+    assert ok_png is False
     assert width is None and height is None
     assert info["error"].lower() == "formaterror: png file has invalid signature."
 
@@ -47,8 +47,8 @@ def test_shape_of_png_nok_test_single_fixture_non_png_file():
 def test_shape_of_png_nok_non_existing_file():
     file_not_there = pathlib.Path("no", "file", "here")
     assert not file_not_there.exists(), f"WARNING: The path {file_not_there} SHOULD not exist, but does."
-    ok, width, height, info = shape_of_png(file_not_there)
-    assert ok is False
+    ok_png, width, height, info = shape_of_png(file_not_there)
+    assert ok_png is False
     assert width is None and height is None
     assert info["error"].lower() == f"[errno 2] no such file or directory: '{str(file_not_there).lower()}'"
 
@@ -59,8 +59,8 @@ def test_diff_img_ok_ref_obs_rgb_red_file():
     assert mismatch == 0
     assert w_diff == 2 and h_diff == 2
     assert tmp_png.exists() and tmp_png.is_file() and tmp_png.stat().st_size == 79
-    ok, width, height, info = shape_of_png(tmp_png)
-    assert ok is True
+    ok_png, width, height, info = shape_of_png(tmp_png)
+    assert ok_png is True
     assert width == 2 and height == 2
     facts = {
         'alpha': False,
