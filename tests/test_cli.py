@@ -50,20 +50,22 @@ def test_main_nok_valid_diff_template(caplog, capsys):
     assert "ok" == out.lower().strip()
     assert not err
     lines = caplog.text.lower().split("\n")
-    expected_log_line_count = 11
+    expected_log_line_count = 13
     assert len(lines) == expected_log_line_count
     assert f"requested external diff tool per template({diff_template})" in lines[0].lower()
-    assert "starting comparisons visiting past" in lines[1].lower()
-    assert "file mode" in lines[1].lower()
-    assert "threshold for pixel mismatch is 1 %" in lines[2].lower()
-    assert "pair" in lines[3].lower()
-    for ndx in (4, 6):
+    assert f"parsed diff template ({diff_template}) into executor" in lines[1].lower()
+    assert f"into executor ({{'executor': '{diff_template}', 'param_file_content': none, 'param_file_name': none}}" in lines[2].lower()
+    assert "starting comparisons visiting past" in lines[3].lower()
+    assert "file mode" in lines[3].lower()
+    assert "threshold for pixel mismatch is 1 %" in lines[4].lower()
+    assert "pair" in lines[5].lower()
+    for ndx in (6, 8):
         assert "to be ok with size 277 bytes" in lines[ndx].lower()
-    for ndx in (5, 7):
+    for ndx in (7, 9):
         assert "as png to be ok with shape 2x2" in lines[ndx].lower()
     # assert f"{str(REF_CHILD_RGB_RED_PNG)} {str(OBS_CHILD_RGB_RED_PNG)} " in str(lines[8]).lower()
-    assert "finished comparisons finding good=1 and bad=0 in file mode" in lines[9].lower()
-    assert not lines[10].strip()
+    assert "finished comparisons finding good=1 and bad=0 in file mode" in lines[11].lower()
+    assert not lines[12].strip()
 
 
 def test_main_nok_non_existing_file(capsys):

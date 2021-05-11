@@ -1,11 +1,8 @@
 # Change History
 
-## 0.0.5 (2021-05-12)
+## 0.0.5 (2021-05-11)
 
-* Added configuration hook for external diff tool
-* Customizable reporting
-* More powerful CLI interface
-* Documented the API
+* More powerful external diff tool interface
 * Decoupled helper functions
 * Better test coverage
 * Fifth release to PyPI

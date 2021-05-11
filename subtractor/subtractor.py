@@ -36,6 +36,9 @@ VISIT_OPTIONS = {
 SLUG_CAP = 164
 SLUG_ETC = " ..."
 
+DSL_MAIN_SPLIT = ":$file:"
+DSL_SUB_SPLIT = ":$name:"
+
 
 def init_logger(name=None, level=None):
     """Initialize module level logger"""
@@ -120,8 +123,12 @@ def process_pair(invoke, good, bad, obs_path, present, ref_path):
                     LOG.info("  Match of obs=%s", obs_path)
                     good += 1
             else:
-                args = invoke.replace("$ref", str(ref_path)).replace("$obs", str(obs_path)).split()
-                completed = subprocess.run(args, capture_output=True)
+                args = invoke["executor"].replace("$ref", str(ref_path)).replace("$obs", str(obs_path)).split()
+                if invoke["param_file_name"]:
+                    param_file_content = invoke["param_file_content"].replace("$ref", str(ref_path)).replace("$obs", str(obs_path))
+                    with open(invoke["param_file_name"], "wt", encoding=ENCODING) as handle:
+                        handle.write(param_file_content)
+                completed = subprocess.run(args, capture_output=True, check=True)
                 if not completed.returncode:
                     good += 1
                 else:
@@ -196,6 +203,25 @@ def matching_zipper(ref, obs, splicer: Splicer, gen, gen_options: dict):
         )
 
 
+def parse_template(text):
+    """Hack to return exec and param file template until config language is clear."""
+    if DSL_MAIN_SPLIT in text:
+        LOG.info("Detected magic (%s) in template", DSL_MAIN_SPLIT)
+        executor, rest = text.split(DSL_MAIN_SPLIT)
+        try:
+            content, name = rest.split(DSL_SUB_SPLIT)
+        except ValueError:
+            LOG.critical("Template with (%s) lacks (%s) to link executor part (%s) with param file content via name.",
+                         DSL_MAIN_SPLIT, DSL_SUB_SPLIT, executor)
+            raise
+        executor = {"executor": executor, "param_file_content": content, "param_file_name": name}
+    else:
+        executor = {"executor": text, "param_file_content": None, "param_file_name": None}
+    LOG.info("Parsed diff template (%s) into executor ...", text)
+    LOG.info(" ...   into executor (%s)", str(executor))
+    return executor
+
+
 def main(argv=None, abort=False, debug=None, threshold=None, diff_template=''):
     """Drive the subtractor.
     This function acts as the command line interface backend.
@@ -207,8 +233,10 @@ def main(argv=None, abort=False, debug=None, threshold=None, diff_template=''):
         print("Usage: subtractor past future [present]")
         return 0, "USAGE"
 
+    executor = {}
     if diff_template:
         LOG.info("Requested external diff tool per template(%s)", diff_template)
+        executor = parse_template(diff_template)
 
     LOG.debug("Guarded dispatch forest=%s", forest)
     past, present, future = causal_triplet(forest)
@@ -232,10 +260,10 @@ def main(argv=None, abort=False, debug=None, threshold=None, diff_template=''):
     good, bad = 0, 0
 
     if not present_is_dir:
-        good, bad = process_pair(diff_template, good, bad, future, present, past)
+        good, bad = process_pair(executor, good, bad, future, present, past)
     else:
         for ref_path, obs_path in matching_zipper(past, future, Splicer(), names_of, VISIT_OPTIONS):
-            good, bad = process_pair(diff_template, good, bad, obs_path, present, ref_path)
+            good, bad = process_pair(executor, good, bad, obs_path, present, ref_path)
             if abort and bad:
                 LOG.error("Requested abort and encountered a bad pair")
                 break
