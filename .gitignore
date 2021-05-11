@@ -134,3 +134,5 @@ dmypy.json
 *.log
 local_publi.sh
 tmp_diff_same.png
+foo
+
