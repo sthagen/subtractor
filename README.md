@@ -14,6 +14,6 @@ Pixels, pixels, pixels.
 [![Known Vulnerabilities](https://snyk.io/test/github/sthagen/jubilant-invention/badge.svg)](https://snyk.io/test/github/sthagen/jubilant-invention/)
 
 ## Status
-Experimental
+Experimental.
 
 **Note**: The default branch is `default`.
