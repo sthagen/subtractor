@@ -9,6 +9,10 @@
 
 Pixels, pixels, pixels.
 
+[![Scrutinizer Status](https://img.shields.io/scrutinizer/g/sthagen/jubilant-invention/default.svg?style=flat)](https://scrutinizer-ci.com/g/sthagen/jubilant-invention/)
+[![Maintainability](https://api.codeclimate.com/v1/badges/16d1c0b14a250d972842/maintainability)](https://codeclimate.com/github/sthagen/jubilant-invention/maintainability)
+[![Known Vulnerabilities](https://snyk.io/test/github/sthagen/jubilant-invention/badge.svg)](https://snyk.io/test/github/sthagen/jubilant-invention/)
+
 ## Status
 Experimental
 
