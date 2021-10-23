@@ -2,8 +2,6 @@
 # pylint: disable=line-too-long,missing-docstring,reimported,unused-import,unused-variable
 import pathlib
 
-import pytest  # type: ignore
-
 from subtractor.pixel import diff_img, shape_of_png
 
 FIXTURE_ROOT = pathlib.Path("tests", "fixtures")
@@ -32,7 +30,7 @@ def test_shape_of_png_ok_test_single_fixture_rgb_file():
         'interlace': 0,
         'palette': [(255, 0, 0), (255, 255, 255)],
         'planes': 1,
-        'size': (2, 2)
+        'size': (2, 2),
     }
     assert info == facts
 
@@ -62,12 +60,5 @@ def test_diff_img_ok_ref_obs_rgb_red_file():
     ok_png, width, height, info = shape_of_png(tmp_png)
     assert ok_png is True
     assert width == 2 and height == 2
-    facts = {
-        'alpha': False,
-        'bitdepth': 8,
-        'greyscale': False,
-        'interlace': 0,
-        'planes': 3,
-        'size': (2, 2)
-    }
+    facts = {'alpha': False, 'bitdepth': 8, 'greyscale': False, 'interlace': 0, 'planes': 3, 'size': (2, 2)}
     assert info == facts

@@ -5,9 +5,11 @@ import logging
 import pathlib
 import subprocess
 import sys
+import typing
+from typing import Tuple
 
-from subtractor.pixel import diff_img, shape_of_png
 import subtractor.pixel as pixel  # To access pixel.OPTIONS["threshold"]
+from subtractor.pixel import diff_img, shape_of_png
 from subtractor.stream import final_suffix_in, visit
 
 ENCODING = "utf-8"
@@ -17,11 +19,7 @@ APP = "subtractor"
 LOG = logging.getLogger()  # Temporary refactoring: module level logger
 LOG_FOLDER = pathlib.Path("logs")
 LOG_FILE = f"{APP}.log"
-LOG_PATH = (
-    pathlib.Path(LOG_FOLDER, LOG_FILE)
-    if LOG_FOLDER.is_dir()
-    else pathlib.Path(LOG_FILE)
-)
+LOG_PATH = pathlib.Path(LOG_FOLDER, LOG_FILE) if LOG_FOLDER.is_dir() else pathlib.Path(LOG_FILE)
 LOG_LEVEL = logging.INFO
 
 FAILURE_PATH_REASON = "Failed action for path %s with error: %s"
@@ -40,6 +38,7 @@ DSL_MAIN_SPLIT = ":$file:"
 DSL_SUB_SPLIT = ":$name:"
 
 
+@typing.no_type_check
 def init_logger(name=None, level=None):
     """Initialize module level logger"""
     global LOG  # pylint: disable=global-statement
@@ -55,6 +54,7 @@ def init_logger(name=None, level=None):
     LOG.propagate = True
 
 
+@typing.no_type_check
 def slugify(thing, these=('\n',), those=(' ',)) -> str:
     """Replace these (default: new lines) by those (default: space) and return string of thing."""
     if not these or not those:
@@ -77,7 +77,7 @@ def slugify(thing, these=('\n',), those=(' ',)) -> str:
     return hook
 
 
-def file_has_content(path: pathlib.Path) -> (bool, str):
+def file_has_content(path: pathlib.Path) -> Tuple[bool, str]:
     """Simplistic handler to develop generic processing function."""
     if not path.is_file():
         return False, f"{path} is no file"
@@ -85,6 +85,7 @@ def file_has_content(path: pathlib.Path) -> (bool, str):
     return byte_size > 0, str(byte_size)
 
 
+@typing.no_type_check
 def process(path, handler, success, failure):
     """Generic processing of path yields a,ended COHDA protocol."""
     valid, message = handler(path)
@@ -94,6 +95,7 @@ def process(path, handler, success, failure):
     return False, message, success, failure + 1
 
 
+@typing.no_type_check
 def process_pair(invoke, good, bad, obs_path, present, ref_path):
     """The main per pair processing code."""
     LOG.info("Pair ref=%s, obs=%s", ref_path, obs_path)
@@ -101,13 +103,21 @@ def process_pair(invoke, good, bad, obs_path, present, ref_path):
         ok_ref, size, _, _ = process(ref_path, file_has_content, good, bad)
         LOG.info("  Found ref=%s to be %s with size %s bytes", ref_path, "OK" if ok_ref else "NOK", size)
         ok_ref, width, height, info = shape_of_png(ref_path)
-        LOG.info("    Analyzed ref=%s as PNG to be %s with %s",
-                 ref_path, "OK" if ok_ref else "NOK", f"shape {width}x{height}" if ok_ref else info["error"])
+        LOG.info(
+            "    Analyzed ref=%s as PNG to be %s with %s",
+            ref_path,
+            "OK" if ok_ref else "NOK",
+            f"shape {width}x{height}" if ok_ref else info["error"],
+        )
         ok_obs, size, _, _ = process(obs_path, file_has_content, good, bad)
         LOG.info("  Found obs=%s to be %s with size %s bytes", obs_path, "OK" if ok_obs else "NOK", size)
         ok_obs, width, height, info = shape_of_png(obs_path)
-        LOG.info("    Analyzed obs=%s as PNG to be %s with %s",
-                 obs_path, "OK" if ok_obs else "NOK", f"shape {width}x{height}" if ok_obs else info["error"])
+        LOG.info(
+            "    Analyzed obs=%s as PNG to be %s with %s",
+            obs_path,
+            "OK" if ok_obs else "NOK",
+            f"shape {width}x{height}" if ok_obs else info["error"],
+        )
         present_path = pathlib.Path(present, f"diff-of-{obs_path.parts[-1]}") if present.is_dir() else present
         if not all([ok_ref, ok_obs]):
             bad += 1
@@ -116,8 +126,13 @@ def process_pair(invoke, good, bad, obs_path, present, ref_path):
                 pixel_count = width * height
                 mismatch, _, _ = diff_img(ref_path, obs_path, present_path)
                 if mismatch:
-                    LOG.info("  Mismatch of obs=%s is %d of %d pixels or %0.1f %%",
-                             obs_path, mismatch, pixel_count, round(100 * mismatch / pixel_count, 1))
+                    LOG.info(
+                        "  Mismatch of obs=%s is %d of %d pixels or %0.1f %%",
+                        obs_path,
+                        mismatch,
+                        pixel_count,
+                        round(100 * mismatch / pixel_count, 1),
+                    )
                     bad += 1
                 else:
                     LOG.info("  Match of obs=%s", obs_path)
@@ -125,7 +140,9 @@ def process_pair(invoke, good, bad, obs_path, present, ref_path):
             else:
                 args = invoke["executor"].replace("$ref", str(ref_path)).replace("$obs", str(obs_path)).split()
                 if invoke["param_file_name"]:
-                    param_file_content = invoke["param_file_content"].replace("$ref", str(ref_path)).replace("$obs", str(obs_path))
+                    param_file_content = (
+                        invoke["param_file_content"].replace("$ref", str(ref_path)).replace("$obs", str(obs_path))
+                    )
                     with open(invoke["param_file_name"], "wt", encoding=ENCODING) as handle:
                         handle.write(param_file_content)
                 completed = subprocess.run(args, capture_output=True, check=True)
@@ -154,6 +171,7 @@ def present_from(ref: pathlib.Path, obs: pathlib.Path) -> pathlib.Path:
     return present
 
 
+@typing.no_type_check
 def causal_triplet(trunks) -> tuple:
     """Generate past, present, and future from trunks or include a present of None."""
     past, future = tuple(pathlib.Path(entry) for entry in trunks[:2])
@@ -173,23 +191,28 @@ def causal_triplet(trunks) -> tuple:
 
 class Splicer:
     """Hollow splicer - split and merge."""
+
+    @typing.no_type_check
     @staticmethod
     def split(thing):
         """Split thing into things."""
         return thing.parts[:-1], thing.parts[-1]
 
+    @typing.no_type_check
     @staticmethod
     def merge(left, right):
         """Merge left and right back into thing."""
         return pathlib.Path(left, right)
 
 
+@typing.no_type_check
 def names_of(root, splicer: Splicer, options):
     """Yield file names of root."""
     for path in visit(root, **options):
         yield splicer.split(path)
 
 
+@typing.no_type_check
 def matching_zipper(ref, obs, splicer: Splicer, gen, gen_options: dict):
     """Generate a complete matching zipper for the longest matching sequence."""
     x_p = {name: (name, None) for _, name in gen(ref, splicer, gen_options)}
@@ -197,12 +220,10 @@ def matching_zipper(ref, obs, splicer: Splicer, gen, gen_options: dict):
         x_p[name] = (name, name) if name in x_p else (None, name)
     for key in sorted(x_p):
         r, o = x_p[key]
-        yield (
-            r if r is None else splicer.merge(ref, r),
-            o if o is None else splicer.merge(obs, o)
-        )
+        yield (r if r is None else splicer.merge(ref, r), o if o is None else splicer.merge(obs, o))
 
 
+@typing.no_type_check
 def parse_template(text):
     """Hack to return exec and param file template until config language is clear."""
     if DSL_MAIN_SPLIT in text:
@@ -211,8 +232,12 @@ def parse_template(text):
         try:
             content, name = rest.split(DSL_SUB_SPLIT)
         except ValueError:
-            LOG.critical("Template with (%s) lacks (%s) to link executor part (%s) with param file content via name.",
-                         DSL_MAIN_SPLIT, DSL_SUB_SPLIT, executor)
+            LOG.critical(
+                "Template with (%s) lacks (%s) to link executor part (%s) with param file content via name.",
+                DSL_MAIN_SPLIT,
+                DSL_SUB_SPLIT,
+                executor,
+            )
             raise
         executor = {"executor": executor, "param_file_content": content, "param_file_name": name}
     else:
@@ -222,6 +247,7 @@ def parse_template(text):
     return executor
 
 
+@typing.no_type_check
 def main(argv=None, abort=False, debug=None, threshold=None, diff_template=''):
     """Drive the subtractor.
     This function acts as the command line interface backend.
@@ -255,8 +281,9 @@ def main(argv=None, abort=False, debug=None, threshold=None, diff_template=''):
     if threshold:
         threshold_fraction = threshold
     pixel.OPTIONS["threshold"] = threshold_fraction
-    LOG.info("  Threshold for pixel mismatch is %d%s",
-             int(100 * threshold_fraction), " %" if threshold_fraction > 0 else "")
+    LOG.info(
+        "  Threshold for pixel mismatch is %d%s", int(100 * threshold_fraction), " %" if threshold_fraction > 0 else ""
+    )
     good, bad = 0, 0
 
     if not present_is_dir:

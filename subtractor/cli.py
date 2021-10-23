@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=line-too-long
 """Build subtracted images from zipping streams."""
-import pathlib
 import os
+import pathlib
 import sys
+import typing
 
 import subtractor.subtractor as diff
 
@@ -22,6 +23,7 @@ DIFF_TEMPLATE = os.getenv(DIFF_TEMPLATE_VAR, '')
 
 
 # pylint: disable=expression-not-assigned
+@typing.no_type_check
 def main(argv=None, abort=None, debug=None, threshold=None, diff_template=''):
     """Dispatch processing of the job.
     This is the strings only command line interface.
@@ -43,6 +45,7 @@ def main(argv=None, abort=None, debug=None, threshold=None, diff_template=''):
             print("ERROR: For now only existing paths accepted.")
             sys.exit(2)
 
-    code, _ = diff.main(list(unique_trees.keys()), abort=abort, debug=debug, threshold=threshold,
-                        diff_template=diff_template)
+    code, _ = diff.main(
+        list(unique_trees.keys()), abort=abort, debug=debug, threshold=threshold, diff_template=diff_template
+    )
     return code

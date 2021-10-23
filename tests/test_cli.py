@@ -55,7 +55,9 @@ def test_main_nok_valid_diff_template(caplog, capsys):
     assert len(lines) == expected_log_line_count
     assert f"requested external diff tool per template({diff_template})" in lines[0].lower()
     assert f"parsed diff template ({diff_template}) into executor" in lines[1].lower()
-    assert f"into executor ({{'executor': '{diff_template}', 'param_file_content': none, 'param_file_name': none}}" in lines[2].lower()
+    assert (
+        f"into executor ({{'executor': '{diff_template}', 'param_file_content': none, 'param_file_name': none}}"
+    ) in lines[2].lower()
     assert "starting comparisons visiting past" in lines[3].lower()
     assert "file mode" in lines[3].lower()
     assert "threshold for pixel mismatch is 1 %" in lines[4].lower()
@@ -73,7 +75,9 @@ def test_main_nok_valid_diff_param_file_template(caplog, capsys):
     caplog.set_level(logging.CRITICAL)
     param_file_name = "foo"
     content_template = 'asd=42 $ref $obs'
-    expected_content = content_template.replace("$ref", str(REF_CHILD_RGB_RED_PNG)).replace("$obs", str(OBS_CHILD_RGB_RED_PNG))
+    expected_content = content_template.replace("$ref", str(REF_CHILD_RGB_RED_PNG)).replace(
+        "$obs", str(OBS_CHILD_RGB_RED_PNG)
+    )
     diff_template = f'echo $ref $obs @{param_file_name}:$file:{content_template}:$name:{param_file_name}'
     assert cli.main([REF_CHILD_RGB_RED_PNG, OBS_CHILD_RGB_RED_PNG], debug=False, diff_template=diff_template) == 0
     assert pathlib.Path(param_file_name).exists() and pathlib.Path(param_file_name).is_file()
@@ -177,4 +181,3 @@ def test_main_nok_folders_of_matching_png_files(caplog, capsys):
     assert f"match of obs={str(OBS2_CHILD_RGB_RED_PNG)}" in lines[7].lower()
     assert "finished comparisons finding good=2 and bad=0 in folder mode" in lines[14].lower()
     assert not lines[15].strip()
-

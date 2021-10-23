@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=c-extension-no-member,expression-not-assigned,line-too-long,logging-fstring-interpolation
 """Juggle with pixels."""
-from PIL import Image
+import typing
+
+import png  # type: ignore
+from PIL import Image  # type: ignore
 from pixelmatch.contrib.PIL import pixelmatch
-import png
 
 OPTIONS = {"threshold": 0.05}
 
 
+@typing.no_type_check
 def shape_of_png(path):
     """MVP like initial shape reader for PNG from path."""
     try:
@@ -19,11 +22,13 @@ def shape_of_png(path):
         return False, None, None, {"error": str(err).replace("\n", "$NL$")}
 
 
+@typing.no_type_check
 def read_img(path):
     """HACK A DID ACK"""
     return Image.open(path)
 
 
+@typing.no_type_check
 def pil_to_flatten_data(img):
     """
     Convert data from [(R1, G1, B1, A1), (R2, G2, B2, A2)] to [R1, G1, B1, A1, R2, G2, B2, A2]
@@ -31,6 +36,7 @@ def pil_to_flatten_data(img):
     return [x for p in img.convert("RGBA").getdata() for x in p]
 
 
+@typing.no_type_check
 def diff_img(ref, obs, sub):
     """Read from ref and obs, calculate the subtraction, output at sub.
 
