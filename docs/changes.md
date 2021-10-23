@@ -1,5 +1,10 @@
 # Change History
 
+## 2021.10.24
+
+* Intermediate release with new dev tools
+* No functional changes
+
 ## 0.0.5 (2021-05-11)
 
 * More powerful external diff tool interface
