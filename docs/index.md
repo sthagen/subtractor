@@ -1,1 +1,14 @@
-Later we use mkdocs for documentation - bootstrapping...
+# gelee
+
+Pixesl, pixels, pixels.
+
+Documentation:
+
+* [Installation](install.md)
+* [Use](use.md)
+* [Command Line API](api.md)
+* [Changes](changes.md)
+
+## Status
+
+Experimental.

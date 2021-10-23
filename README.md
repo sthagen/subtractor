@@ -1,6 +1,6 @@
 # subtractor
 
-[![license](https://img.shields.io/github/license/sthagen/jubilant-invention.svg?style=flat)](https://github.com/sthagen/jubilant-invention/blob/default/LICENSE)
+[![license](https://img.shields.io/github/license/sthagen/subtractor.svg?style=flat)](https://github.com/sthagen/subtractor/blob/default/LICENSE)
 [![version](https://img.shields.io/pypi/v/subtractor.svg?style=flat)](https://pypi.python.org/pypi/subtractor/)
 [![downloads](https://img.shields.io/pypi/dm/subtractor.svg?style=flat)](https://pypi.python.org/pypi/subtractor/)
 [![wheel](https://img.shields.io/pypi/wheel/subtractor.svg?style=flat)](https://pypi.python.org/pypi/subtractor/)
