@@ -4,15 +4,15 @@ import pathlib
 
 from subtractor.pixel import diff_img, shape_of_png
 
-FIXTURE_ROOT = pathlib.Path("tests", "fixtures")
-DEFAULT_FILE_NAME = "empty.png"
-SINGLE_FILE_FOLDER = pathlib.Path(FIXTURE_ROOT, "single_file")
+FIXTURE_ROOT = pathlib.Path('tests', 'fixtures')
+DEFAULT_FILE_NAME = 'empty.png'
+SINGLE_FILE_FOLDER = pathlib.Path(FIXTURE_ROOT, 'single_file')
 SINGLE_FILE_PATH_EMPTY_PNG = pathlib.Path(SINGLE_FILE_FOLDER, DEFAULT_FILE_NAME)
 
-REF_OBS_ROOT = pathlib.Path(FIXTURE_ROOT, "ref_obs")
-REF_CHILD_FOLDER = pathlib.Path(REF_OBS_ROOT, "ref")
-OBS_CHILD_FOLDER = pathlib.Path(REF_OBS_ROOT, "obs")
-RGB_RED_NAME = "ff0000_2x2.png"
+REF_OBS_ROOT = pathlib.Path(FIXTURE_ROOT, 'ref_obs')
+REF_CHILD_FOLDER = pathlib.Path(REF_OBS_ROOT, 'ref')
+OBS_CHILD_FOLDER = pathlib.Path(REF_OBS_ROOT, 'obs')
+RGB_RED_NAME = 'ff0000_2x2.png'
 REF_CHILD_RGB_RED_PNG = pathlib.Path(REF_CHILD_FOLDER, RGB_RED_NAME)
 OBS_CHILD_RGB_RED_PNG = pathlib.Path(OBS_CHILD_FOLDER, RGB_RED_NAME)
 
@@ -39,20 +39,20 @@ def test_shape_of_png_nok_test_single_fixture_non_png_file():
     ok_png, width, height, info = shape_of_png(SINGLE_FILE_PATH_EMPTY_PNG)
     assert ok_png is False
     assert width is None and height is None
-    assert info["error"].lower() == "formaterror: png file has invalid signature."
+    assert info['error'].lower() == 'formaterror: png file has invalid signature.'
 
 
 def test_shape_of_png_nok_non_existing_file():
-    file_not_there = pathlib.Path("no", "file", "here")
-    assert not file_not_there.exists(), f"WARNING: The path {file_not_there} SHOULD not exist, but does."
+    file_not_there = pathlib.Path('no', 'file', 'here')
+    assert not file_not_there.exists(), f'WARNING: The path {file_not_there} SHOULD not exist, but does.'
     ok_png, width, height, info = shape_of_png(file_not_there)
     assert ok_png is False
     assert width is None and height is None
-    assert info["error"].lower() == f"[errno 2] no such file or directory: '{str(file_not_there).lower()}'"
+    assert info['error'].lower() == f"[errno 2] no such file or directory: '{str(file_not_there).lower()}'"
 
 
 def test_diff_img_ok_ref_obs_rgb_red_file():
-    tmp_png = pathlib.Path("tmp_diff_same.png")
+    tmp_png = pathlib.Path('tmp_diff_same.png')
     mismatch, w_diff, h_diff = diff_img(REF_CHILD_RGB_RED_PNG, OBS_CHILD_RGB_RED_PNG, tmp_png)
     assert mismatch == 0
     assert w_diff == 2 and h_diff == 2

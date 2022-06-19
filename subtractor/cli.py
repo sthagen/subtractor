@@ -9,16 +9,16 @@ import typing
 
 import subtractor.subtractor as diff
 
-DEBUG_VAR = "SUBTRACTOR_DEBUG"
+DEBUG_VAR = 'SUBTRACTOR_DEBUG'
 DEBUG = bool(os.getenv(DEBUG_VAR))
 
-ABORT_VAR = "SUBTRACTOR_ABORT"
+ABORT_VAR = 'SUBTRACTOR_ABORT'
 ABORT = bool(os.getenv(ABORT_VAR))
 
-THRESHOLD_VAR = "SUBTRACTOR_THRESHOLD"
-THRESHOLD = float(os.getenv(THRESHOLD_VAR, "0.01"))
+THRESHOLD_VAR = 'SUBTRACTOR_THRESHOLD'
+THRESHOLD = float(os.getenv(THRESHOLD_VAR, '0.01'))
 
-DIFF_TEMPLATE_VAR = "SUBTRACTOR_DIFF_TEMPLATE"
+DIFF_TEMPLATE_VAR = 'SUBTRACTOR_DIFF_TEMPLATE'
 DIFF_TEMPLATE = os.getenv(DIFF_TEMPLATE_VAR, '')
 
 
@@ -35,14 +35,14 @@ def main(argv=None, abort=None, debug=None, threshold=None, diff_template=''):
     threshold = threshold if threshold else THRESHOLD
     diff_template = diff_template if diff_template else DIFF_TEMPLATE
     if diff_template:
-        if not all(["$ref" in diff_template, "$obs" in diff_template]):
-            print("ERROR: When using external diff tool, template requires mention of $ref and $obs.")
+        if not all(['$ref' in diff_template, '$obs' in diff_template]):
+            print('ERROR: When using external diff tool, template requires mention of $ref and $obs.')
             sys.exit(2)
 
     unique_trees = {arg: None for arg in argv}
     for tree_or_leaf in unique_trees:
         if not pathlib.Path(tree_or_leaf).is_file() and not pathlib.Path(tree_or_leaf).is_dir():
-            print("ERROR: For now only existing paths accepted.")
+            print('ERROR: For now only existing paths accepted.')
             sys.exit(2)
 
     code, _ = diff.main(
