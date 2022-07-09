@@ -7,7 +7,7 @@ import pytest  # type: ignore
 
 from subtractor.stream import final_suffix_in, visit
 
-FIXTURE_ROOT = pathlib.Path('tests', 'fixtures')
+FIXTURE_ROOT = pathlib.Path('test', 'fixtures')
 DEFAULT_FILE_NAME = 'empty.png'
 SINGLE_FILE_FOLDER = pathlib.Path(FIXTURE_ROOT, 'single_file')
 SINGLE_FILE_PATH_EMPTY_PNG = pathlib.Path(SINGLE_FILE_FOLDER, DEFAULT_FILE_NAME)
