@@ -1,5 +1,4 @@
 SHELL = /bin/bash
-package = shagen/subtractor
 
 .DEFAULT_GOAL := all
 isort = isort subtractor test
@@ -63,4 +62,3 @@ clean:
 	@rm -f *.log foo
 	@rm -fr $$(find test/fixtures -print | grep "diff-")
 	python setup.py clean
-	@git status
