@@ -62,3 +62,4 @@ clean:
 	@rm -f *.log foo
 	@rm -fr $$(find test/fixtures -print | grep "diff-")
 	python setup.py clean
+	@rm -fr site/*
