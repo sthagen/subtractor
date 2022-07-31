@@ -39,7 +39,7 @@ def test_shape_of_png_nok_test_single_fixture_non_png_file():
     ok_png, width, height, info = shape_of_png(SINGLE_FILE_PATH_EMPTY_PNG)
     assert ok_png is False
     assert width is None and height is None
-    assert info['error'].lower() == 'formaterror: png file has invalid signature.'
+    assert info['error'].lower() == 'end of png stream.'
 
 
 def test_shape_of_png_nok_non_existing_file():
