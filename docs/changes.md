@@ -1,5 +1,9 @@
 # Change History
 
+## 2022.8.2
+
+* Hot fix providing the correct test coverage documentation link on PyPI
+
 ## 2022.8.1
 
 * Migrated upsteram away from github
