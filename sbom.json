@@ -1,0 +1,104 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.4.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "serialNumber": "urn:uuid:40949566-017c-4e02-be89-0462286339bb",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2022-08-01T16:37:28.777493+00:00",
+    "tools": [
+      {
+        "vendor": "CycloneDX",
+        "name": "cyclonedx-bom",
+        "version": "3.5.0"
+      },
+      {
+        "vendor": "CycloneDX",
+        "name": "cyclonedx-python-lib",
+        "version": "2.6.0",
+        "externalReferences": [
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-python-lib/actions",
+            "type": "build-system"
+          },
+          {
+            "url": "https://pypi.org/project/cyclonedx-python-lib/",
+            "type": "distribution"
+          },
+          {
+            "url": "https://cyclonedx.github.io/cyclonedx-python-lib/",
+            "type": "documentation"
+          },
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-python-lib/issues",
+            "type": "issue-tracker"
+          },
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-python-lib/blob/main/LICENSE",
+            "type": "license"
+          },
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-python-lib/blob/main/CHANGELOG.md",
+            "type": "release-notes"
+          },
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-python-lib",
+            "type": "vcs"
+          },
+          {
+            "url": "https://cyclonedx.org",
+            "type": "website"
+          }
+        ]
+      }
+    ]
+  },
+  "components": [
+    {
+      "type": "library",
+      "bom-ref": "fdf6c104-c2ef-4e69-abd0-baae6210ec3b",
+      "name": "Pillow",
+      "version": "9.2.0",
+      "purl": "pkg:pypi/pillow@9.2.0"
+    },
+    {
+      "type": "library",
+      "bom-ref": "2f9f0db1-8d28-4776-aa79-c1e126cc6017",
+      "name": "pixelmatch",
+      "version": "0.3.0",
+      "purl": "pkg:pypi/pixelmatch@0.3.0"
+    },
+    {
+      "type": "library",
+      "bom-ref": "86c51fc0-6d27-492c-8152-eff6e6316367",
+      "name": "pypng",
+      "version": "0.20220715.0",
+      "purl": "pkg:pypi/pypng@0.20220715.0"
+    },
+    {
+      "type": "library",
+      "bom-ref": "babd97b7-2e9e-4a63-a737-f9e515a8431c",
+      "name": "typer",
+      "version": "0.6.1",
+      "purl": "pkg:pypi/typer@0.6.1"
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "fdf6c104-c2ef-4e69-abd0-baae6210ec3b",
+      "dependsOn": []
+    },
+    {
+      "ref": "2f9f0db1-8d28-4776-aa79-c1e126cc6017",
+      "dependsOn": []
+    },
+    {
+      "ref": "86c51fc0-6d27-492c-8152-eff6e6316367",
+      "dependsOn": []
+    },
+    {
+      "ref": "babd97b7-2e9e-4a63-a737-f9e515a8431c",
+      "dependsOn": []
+    }
+  ]
+}
