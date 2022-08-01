@@ -1,4 +1,6 @@
-# Example Usage
+# Usage
+
+## Examples
 
 You can add four environment variables (and mix them independently) per `-e VAR_NAME=value` to modify the behavior of the subtractor:
 
