@@ -15,8 +15,8 @@ DEFAULT_CONFIG_NAME = '.subtractor.json'
 DEFAULT_LF_ONLY = 'YES'
 
 # [[[fill git_describe()]]]
-__version__ = '2022.8.1+parent.402b0885'
-# [[[end]]] (checksum: 5f96eaee02d1eb55e321959964bc02c7)
+__version__ = '2022.8.2+parent.8746c51c'
+# [[[end]]] (checksum: 15ad1d05d39dbfef6ff464be1d255c8a)
 __version_info__ = tuple(
     e if '-' not in e else e.split('-')[0] for part in __version__.split('+') for e in part.split('.') if e != 'parent'
 )
