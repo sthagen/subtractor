@@ -60,6 +60,21 @@ clean:
 	@rm -f .coverage.*
 	@rm -rf build
 	@rm -f *.log foo
-	@rm -fr $$(find test/fixtures -print | grep "diff-")
+
+	python setup.py clean
+	@rm -fr site/*
+
+.PHONY: clocal
+clocal:
+	rm -f current-bandit.json .csaf_cache.sqlite
+
+.PHONY: clean
+clean:
+	@rm -rf `find . -name __pycache__`
+	@rm -f `find . -type f -name '*.py[co]' `
+	@rm -f `find . -type f -name '*~' `
+	@rm -f `find . -type f -name '.*~' `
+	@rm -rf .cache htmlcov *.egg-info build dist/*
+	@rm -f .coverage .coverage.* *.log current-bandit.json
 	python setup.py clean
 	@rm -fr site/*
