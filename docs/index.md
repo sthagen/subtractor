@@ -2,7 +2,7 @@
 
 Pixels, pixels, pixels.
 
-[![license](https://img.shields.io/github/license/sthagen/subtractor.svg?style=flat)](https://github.com/sthagen/subtractor/blob/default/LICENSE)
+[License: MIT](https://git.sr.ht/~sthagen/subtractor/tree/default/item/LICENSE)
 
 [![version](https://img.shields.io/pypi/v/subtractor.svg?style=flat)](https://pypi.python.org/pypi/subtractor/)
 [![downloads](https://pepy.tech/badge/subtractor/month)](https://pepy.tech/project/subtractor)
@@ -10,6 +10,15 @@ Pixels, pixels, pixels.
 [![supported-versions](https://img.shields.io/pypi/pyversions/subtractor.svg?style=flat)](https://pypi.python.org/pypi/subtractor/)
 [![supported-implementations](https://img.shields.io/pypi/implementation/subtractor.svg?style=flat)](https://pypi.python.org/pypi/subtractor/)
 
-## Status
+## Documentation
 
-Experimental.
+User and developer [documentation of subtractor](https://codes.dilettant.life/docs/subtractor).
+
+## Bug Tracker
+
+Feature requests and bug reports are bested entered in the [todos of subtractor](https://todo.sr.ht/~sthagen/subtractor).
+
+## Primary Source repository
+
+The primary source repository of [subtractor is at sourcehut](https://git.sr.ht/~sthagen/subtractor)
+a collection of tools useful for software development.
