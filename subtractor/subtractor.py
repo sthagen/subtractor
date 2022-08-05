@@ -3,7 +3,7 @@
 """Do the diff."""
 import logging
 import pathlib
-import subprocess  #nosec B404
+import subprocess  # nosec B404
 import sys
 import typing
 from typing import Tuple
@@ -145,7 +145,7 @@ def process_pair(invoke, good, bad, obs_path, present, ref_path):
                     )
                     with open(invoke['param_file_name'], 'wt', encoding=ENCODING) as handle:
                         handle.write(param_file_content)
-                completed = subprocess.run(args, capture_output=True, check=True)  #nosec B603
+                completed = subprocess.run(args, capture_output=True, check=True)  # nosec B603
                 if not completed.returncode:
                     good += 1
                 else:
