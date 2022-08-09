@@ -16,7 +16,7 @@ User and developer [documentation of subtractor](https://codes.dilettant.life/do
 
 ## Bug Tracker
 
-Feature requests and bug reports are bested entered in the [todos of subtractor](https://todo.sr.ht/~sthagen/subtractor).
+Feature requests and bug reports are best entered in the [todos of subtractor](https://todo.sr.ht/~sthagen/subtractor).
 
 ## Primary Source repository
 
