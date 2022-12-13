@@ -4,6 +4,8 @@ Pixels, pixels, pixels.
 
 [License: MIT](https://git.sr.ht/~sthagen/subtractor/tree/default/item/LICENSE)
 
+Third party dependencies are documented in the folder [third-party](third-party/README.md).
+
 [![version](https://img.shields.io/pypi/v/subtractor.svg?style=flat)](https://pypi.python.org/pypi/subtractor/)
 [![downloads](https://pepy.tech/badge/subtractor/month)](https://pepy.tech/project/subtractor)
 [![wheel](https://img.shields.io/pypi/wheel/subtractor.svg?style=flat)](https://pypi.python.org/pypi/subtractor/)
