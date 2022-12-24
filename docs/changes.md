@@ -1,5 +1,9 @@
 # Change History
 
+## Source
+
+* Migrated to ruff and pyproject.toml configuration
+
 ## 2022.8.2
 
 * Hot fix providing the correct test coverage documentation link on PyPI

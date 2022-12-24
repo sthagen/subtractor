@@ -1,8 +1,8 @@
-SHELL = /bin/bash
-
 .DEFAULT_GOAL := all
-isort = isort subtractor test
 black = black -S -l 120 --target-version py38 subtractor test
+lint = ruff subtractor test
+pytest = pytest --asyncio-mode=strict --cov=subtractor --cov-report term-missing:skip-covered --cov-branch --log-format="%(levelname)s %(message)s"
+types = mypy subtractor
 
 .PHONY: install
 install:
@@ -16,7 +16,7 @@ install-all: install
 
 .PHONY: format
 format:
-	$(isort)
+	$(lint) --fix
 	$(black)
 
 .PHONY: init
@@ -27,17 +27,16 @@ init:
 .PHONY: lint
 lint:
 	python setup.py check -ms
-	flake8 subtractor/ test/
-	$(isort) --check-only --df
+	$(lint)
 	$(black) --check --diff
 
-.PHONY: mypy
-mypy:
-	mypy subtractor
+.PHONY: types
+types:
+	$(types)
 
 .PHONY: test
 test: clean
-	pytest --asyncio-mode=strict --cov=subtractor --cov-report term-missing:skip-covered --cov-branch --log-format="%(levelname)s %(message)s"
+	$(pytest)
 
 .PHONY: testcov
 testcov: test
@@ -45,7 +44,7 @@ testcov: test
 	@coverage html
 
 .PHONY: all
-all: lint mypy testcov
+all: lint types testcov
 
 .PHONY: sbom
 sbom:
