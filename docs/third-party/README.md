@@ -1,8 +1,8 @@
 # Third Party Dependencies
 
 <!--[[[fill sbom_sha256()]]]-->
-The [SBOM in CycloneDX v1.4 JSON format](https://git.sr.ht/~sthagen/subtractor/blob/default/sbom.json) with SHA256 checksum ([029f8022 ...](https://git.sr.ht/~sthagen/subtractor/blob/default/sbom.json.sha256 "sha256:029f80220666d15601d514e21819df1ebcf367b67a44e1f345a586d8e271f29d")).
-<!--[[[end]]] (checksum: c83b330db159a26484a6b245b044ad2d)-->
+The [SBOM in CycloneDX v1.4 JSON format](https://git.sr.ht/~sthagen/subtractor/blob/default/sbom.json) with SHA256 checksum ([f704f2ab ...](https://git.sr.ht/~sthagen/subtractor/blob/default/sbom.json.sha256 "sha256:f704f2ab3bccdb6dc025e12bb19bd4df8fa5a398f505a3b199750dda2b981366")).
+<!--[[[end]]] (checksum: 701b633395183acdf3b3a00ec837bf81)-->
 ## Licenses 
 
 JSON files with complete license info of: [direct dependencies](direct-dependency-licenses.json) | [all dependencies](all-dependency-licenses.json)
@@ -12,11 +12,11 @@ JSON files with complete license info of: [direct dependencies](direct-dependenc
 <!--[[[fill direct_dependencies_table()]]]-->
 | Name                                                  | Version                                                      | License                                            | Author                       | Description (from packaging data)                                  |
 |:------------------------------------------------------|:-------------------------------------------------------------|:---------------------------------------------------|:-----------------------------|:-------------------------------------------------------------------|
-| [Pillow](https://python-pillow.org)                   | [9.3.0](https://pypi.org/project/Pillow/9.3.0/)              | Historical Permission Notice and Disclaimer (HPND) | Alex Clark (PIL Fork Author) | Python Imaging Library (Fork)                                      |
+| [Pillow](https://python-pillow.org)                   | [9.4.0](https://pypi.org/project/Pillow/9.4.0/)              | Historical Permission Notice and Disclaimer (HPND) | Alex Clark (PIL Fork Author) | Python Imaging Library (Fork)                                      |
 | [pixelmatch](https://github.com/whtsky/pixelmatch-py) | [0.3.0](https://pypi.org/project/pixelmatch/0.3.0/)          | ISC                                                | Wu Haotian                   | A pixel-level image comparison library.                            |
 | [pypng](https://gitlab.com/drj11/pypng)               | [0.20220715.0](https://pypi.org/project/pypng/0.20220715.0/) | MIT License                                        | David Jones                  | Pure Python library for saving and loading PNG images              |
 | [typer](https://github.com/tiangolo/typer)            | [0.7.0](https://pypi.org/project/typer/0.7.0/)               | MIT License                                        | Sebastián Ramírez            | Typer, build great CLIs. Easy to code. Based on Python type hints. |
-<!--[[[end]]] (checksum: 1dd88b903498fb81626fe7b574aca1b7)-->
+<!--[[[end]]] (checksum: 3dc09cb37b8c02bce1e6b3453fe53a78)-->
 
 ### Indirect Dependencies
 
@@ -40,10 +40,10 @@ Base graphviz file in dot format: [Trees of the direct dependencies](package-dep
 
 <!--[[[fill dependency_tree_console_text()]]]-->
 ````console
-Pillow==9.3.0
+Pillow==9.4.0
 pixelmatch==0.3.0
 pypng==0.20220715.0
 typer==0.7.0
   - click [required: >=7.1.1,<9.0.0, installed: 8.1.3]
 ````
-<!--[[[end]]] (checksum: 337e8213f9c5fbc05f29ca02ddca0f66)-->
+<!--[[[end]]] (checksum: 54e30fc8a123c1765c7ab3f38f168eb1)-->
