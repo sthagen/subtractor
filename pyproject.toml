@@ -19,7 +19,7 @@ classifiers = [
 ]
 keywords = ["developer-tools", "images", "validation", "verification"]
 dependencies = [
-    "Pillow >= 9.4.0",
+    "Pillow >= 9.5.0",
     "pixelmatch >= 0.3.0",
     "pypng >= 0.20220715.0",
     "typer >= 0.7.0",
