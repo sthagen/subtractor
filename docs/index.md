@@ -11,10 +11,7 @@ Third party dependencies are documented in the folder [third-party](third-party/
 [![wheel](https://img.shields.io/pypi/wheel/subtractor.svg?style=flat)](https://pypi.python.org/pypi/subtractor/)
 [![supported-versions](https://img.shields.io/pypi/pyversions/subtractor.svg?style=flat)](https://pypi.python.org/pypi/subtractor/)
 [![supported-implementations](https://img.shields.io/pypi/implementation/subtractor.svg?style=flat)](https://pypi.python.org/pypi/subtractor/)
-
-## Documentation
-
-User and developer [documentation of subtractor](https://codes.dilettant.life/docs/subtractor).
+[![maintenance-status](https://img.shields.io/github/commit-activity/y/sthagen/subtractor.svg?style=flat)](https://git.sr.ht/~sthagen/subtractor/log)
 
 ## Bug Tracker
 
