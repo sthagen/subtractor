@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "subtractor"
-version = "2022.8.2"
+version = "2023.10.21"
 description = "Pixels, pixels, pixels."
 readme = "README.md"
 authors = [{ name = "Stefan Hagen", email = "stefan@hagen.link" }]
