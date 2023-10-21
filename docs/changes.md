@@ -1,7 +1,8 @@
 # Changes
 
-Source
-:    * Migrated to ruff and pyproject.toml configuration
+2023.10.21
+:    * Changed repository structure and added about, security, and support info files
+* Migrated to ruff and pyproject.toml configuration
 
 ## 2022
 
