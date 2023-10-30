@@ -11,7 +11,16 @@ title = "Subtractor"
 builddir = "book"
 
 [output.html]
-mathjax-support = true
-site-url = "/docs/subtractor"
+default-theme = "coal"
 git-repository-url = "https://git.sr.ht/~sthagen/subtractor"
+git-repository-icon = "fa-code-fork"
+mathjax-support = true
+no-section-label = true
+preferred-dark-theme = "navy"
+site-url = "/docs/subtractor"
 
+[output.html.print]
+enable = false
+
+[output.html.fold]
+enable = false
