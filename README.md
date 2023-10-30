@@ -10,7 +10,7 @@ Pixels, pixels, pixels.
 [![Version](https://img.shields.io/pypi/v/subtractor.svg?style=flat)](https://pypi.python.org/pypi/subtractor/)
 [![Downloads](https://static.pepy.tech/badge/subtractor/month)](https://pepy.tech/project/subtractor)
 [![Supported Versions](https://img.shields.io/pypi/pyversions/subtractor.svg?style=flat)](https://pypi.python.org/pypi/subtractor/)
-[![Maintenance Status](https://img.shields.io/github/commit-activity/y/sthagen/subtractor.svg?style=flat)](https://git.sr.ht/~sthagen/subtractor/log)
+[![Maintenance Status](docs/badges/downloads-per-month.svg)](https://git.sr.ht/~sthagen/subtractor/log)
 
 ## Documentation
 
