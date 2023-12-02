@@ -1,7 +1,7 @@
 {
   "subtractor": {
-    "version": "7.3.2",
-    "timestamp": "2023-12-02T15:34:37.105128",
+    "coverage_tool_version": "7.3.2",
+    "timestamp": "2023-12-02 16:31:05 +00:00",
     "branch_coverage": true,
     "show_contexts": true,
     "covered_lines": 285,
@@ -13,6 +13,25 @@
     "num_branches": 106,
     "num_partial_branches": 9,
     "covered_branches": 95,
-    "missing_branches": 11
+    "missing_branches": 11,
+    "node_id": "c79891e5-aabf-3a83-95b9-588edcd8327f",
+    "nfiles": 6,
+    "files": [
+      "subtractor/__init__.py",
+      "subtractor/cli.py",
+      "subtractor/pixel.py",
+      "subtractor/report.py",
+      "subtractor/stream.py",
+      "subtractor/subtractor.py"
+    ],
+    "blake3": "7e98ff2e926c2568d1e1b815f823c187db306604e66c15365711c09f5d5e5b28",
+    "blake2": "e310b2b0206a1e525d3b1c2a91dbde8532d39e52df1e291abef4d871d50482bee54f464a84c0c7a1cd9d50edf009a1ddb63c9fe2439e9f5070aeee5d72c0df94",
+    "sha512": "66771e6f939f298c3d2fd8d5f7c5936a857c130e3a9b4757aeb54c9bf15ae0fa4411f8e889c1696e0b1e9c3d2a8fb5007bf6da30675de95d04c3ff758eb3e002",
+    "sha384": "6602a1cbf9ab47394f364e92e292868548be06b81426f3e01e201095f896ae977397fe43a58f69c1308af91b2af2096c",
+    "sha256": "3e49685c4104be9eb8507259903ac14cfafe4558b745890f2de7e96e7e03734f",
+    "sha1": "8d31610437410b5abd75b9918df1eb28560efaa3",
+    "md5": "a03fac98deb46524d281eddf15c168ad",
+    "python_version": "3.10.12",
+    "entropy": 4.885372
   }
 }
