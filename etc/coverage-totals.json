@@ -1,0 +1,18 @@
+{
+  "subtractor": {
+    "version": "7.3.2",
+    "timestamp": "2023-12-02T15:34:37.105128",
+    "branch_coverage": true,
+    "show_contexts": true,
+    "covered_lines": 285,
+    "num_statements": 298,
+    "percent_covered": 94.05940594059406,
+    "percent_covered_display": "94.06",
+    "missing_lines": 13,
+    "excluded_lines": 0,
+    "num_branches": 106,
+    "num_partial_branches": 9,
+    "covered_branches": 95,
+    "missing_branches": 11
+  }
+}
