@@ -1,9 +1,9 @@
 [
     {
         "key": "pillow",
-        "package_name": "Pillow",
-        "installed_version": "10.1.0",
-        "required_version": "10.1.0",
+        "package_name": "pillow",
+        "installed_version": "10.2.0",
+        "required_version": "10.2.0",
         "dependencies": []
     },
     {

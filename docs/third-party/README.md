@@ -1,8 +1,8 @@
 # Third Party Dependencies
 
 <!--[[[fill sbom_sha256()]]]-->
-The [SBOM in CycloneDX v1.4 JSON format](https://git.sr.ht/~sthagen/subtractor/blob/default/etc/sbom/cdx.json) with SHA256 checksum ([d24a33bb ...](https://git.sr.ht/~sthagen/subtractor/blob/default/etc/sbom/cdx.json.sha256 "sha256:d24a33bb1872072295c49f27fc3f07e19628601d2365837803f08294ea70c131")).
-<!--[[[end]]] (checksum: 59292b3dd8deba74e44301e95de3ada5)-->
+The [SBOM in CycloneDX v1.4 JSON format](https://git.sr.ht/~sthagen/subtractor/blob/default/etc/sbom/cdx.json) with SHA256 checksum ([b0cbcbc7 ...](https://git.sr.ht/~sthagen/subtractor/blob/default/etc/sbom/cdx.json.sha256 "sha256:b0cbcbc75efec5bdeeec77d83680cf76c724f07b3186d76c37a0716dc0621e6a")).
+<!--[[[end]]] (checksum: c2470aa47d3dc0c5f705a3aaccf825fa)-->
 ## Licenses 
 
 JSON files with complete license info of: [direct dependencies](direct-dependency-licenses.json) | [all dependencies](all-dependency-licenses.json)
@@ -10,13 +10,13 @@ JSON files with complete license info of: [direct dependencies](direct-dependenc
 ### Direct Dependencies
 
 <!--[[[fill direct_dependencies_table()]]]-->
-| Name                                                  | Version                                                      | License                                            | Author                  | Description (from packaging data)                                  |
-|:------------------------------------------------------|:-------------------------------------------------------------|:---------------------------------------------------|:------------------------|:-------------------------------------------------------------------|
-| [Pillow](https://python-pillow.org)                   | [10.1.0](https://pypi.org/project/Pillow/10.1.0/)            | Historical Permission Notice and Disclaimer (HPND) | Jeffrey A. Clark (Alex) | Python Imaging Library (Fork)                                      |
-| [pixelmatch](https://github.com/whtsky/pixelmatch-py) | [0.3.0](https://pypi.org/project/pixelmatch/0.3.0/)          | ISC                                                | Wu Haotian              | A pixel-level image comparison library.                            |
-| [pypng](https://gitlab.com/drj11/pypng)               | [0.20220715.0](https://pypi.org/project/pypng/0.20220715.0/) | MIT License                                        | David Jones             | Pure Python library for saving and loading PNG images              |
-| [typer](https://github.com/tiangolo/typer)            | [0.9.0](https://pypi.org/project/typer/0.9.0/)               | MIT License                                        | Sebastián Ramírez       | Typer, build great CLIs. Easy to code. Based on Python type hints. |
-<!--[[[end]]] (checksum: 5332284d9d44e34237ea36f156077923)-->
+| Name                                                  | Version                                                      | License                                            | Author                                        | Description (from packaging data)                                  |
+|:------------------------------------------------------|:-------------------------------------------------------------|:---------------------------------------------------|:----------------------------------------------|:-------------------------------------------------------------------|
+| [pillow](https://python-pillow.org)                   | [10.2.0](https://pypi.org/project/pillow/10.2.0/)            | Historical Permission Notice and Disclaimer (HPND) | "Jeffrey A. Clark (Alex)" <aclark@aclark.net> | Python Imaging Library (Fork)                                      |
+| [pixelmatch](https://github.com/whtsky/pixelmatch-py) | [0.3.0](https://pypi.org/project/pixelmatch/0.3.0/)          | ISC                                                | Wu Haotian                                    | A pixel-level image comparison library.                            |
+| [pypng](https://gitlab.com/drj11/pypng)               | [0.20220715.0](https://pypi.org/project/pypng/0.20220715.0/) | MIT License                                        | David Jones                                   | Pure Python library for saving and loading PNG images              |
+| [typer](https://github.com/tiangolo/typer)            | [0.9.0](https://pypi.org/project/typer/0.9.0/)               | MIT License                                        | Sebastián Ramírez                             | Typer, build great CLIs. Easy to code. Based on Python type hints. |
+<!--[[[end]]] (checksum: c29e4056977372e9da34658aec30d1d2)-->
 
 ### Indirect Dependencies
 
@@ -41,11 +41,11 @@ Base graphviz file in dot format: [Trees of the direct dependencies](package-dep
 
 <!--[[[fill dependency_tree_console_text()]]]-->
 ````console
-Pillow==10.1.0
+pillow==10.2.0
 pixelmatch==0.3.0
 pypng==0.20220715.0
 typer==0.9.0
 ├── click [required: >=7.1.1,<9.0.0, installed: 8.1.6]
 └── typing-extensions [required: >=3.7.4.3, installed: 4.7.1]
 ````
-<!--[[[end]]] (checksum: 74bf0a5e9bd2fb6d093b23489cb3ba9b)-->
+<!--[[[end]]] (checksum: 5bfcaef984196caec09eb2f79bea2eda)-->
