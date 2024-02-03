@@ -1,4 +1,5 @@
 """Pixels, pixels, pixels."""
+
 import os
 import pathlib
 from typing import List
