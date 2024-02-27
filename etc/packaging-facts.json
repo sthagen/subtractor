@@ -20,6 +20,7 @@
       "last_month": -1,
       "last_week": -1
     },
+    "dynamic": null,
     "home_page": "",
     "keywords": "developer-tools,images,validation,verification",
     "license": "",
@@ -36,6 +37,7 @@
       "Source-Code": "https://git.sr.ht/~sthagen/subtractor",
       "Test-Coverage": "https://codes.dilettant.life/coverage/subtractor"
     },
+    "provides_extra": null,
     "release_url": "https://pypi.org/project/subtractor/2023.10.21/",
     "requires_dist": [
       "Pillow >=10.1.0",
