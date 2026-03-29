@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=line-too-long
 """Build subtracted images from zipping streams."""
+
 import os
 import pathlib
 import sys

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=c-extension-no-member,expression-not-assigned,invalid-name,line-too-long,logging-fstring-interpolation
 """Do the diff."""
+
 import logging
 import pathlib
 import subprocess  # nosec B404

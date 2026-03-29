@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=c-extension-no-member,expression-not-assigned,line-too-long,logging-fstring-interpolation
 """Juggle with pixels."""
+
 import typing
 
 import png  # type: ignore
-from PIL import Image  # type: ignore
+from PIL import Image
 from pixelmatch.contrib.PIL import pixelmatch
 
 OPTIONS = {'threshold': 0.05}
